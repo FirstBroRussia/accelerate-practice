@@ -1,4 +1,4 @@
-import { LocationMetroType, UserRoleType } from "@fitfriends-backend/shared-types";
+import { BackgroundImageForUsercardType, GenderType, LocationMetroType, UserRoleType } from "@fitfriends-backend/shared-types";
 
 
 export interface UserInterface {
@@ -10,7 +10,9 @@ export interface UserInterface {
 
   password?: string;
 
-  gender?: string;
+  gender?: GenderType;
+
+  dateOfBirth?: string;
 
   role?: UserRoleType;
 
@@ -18,7 +20,7 @@ export interface UserInterface {
 
   location?: LocationMetroType;
 
-  imageForSite?: string;
+  imageForSite?: BackgroundImageForUsercardType;
 
   createdAt?: string;
 }
