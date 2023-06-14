@@ -1,5 +1,5 @@
 // DTO
-export * from './lib/dto/users/create-user.dto';
+// export * from './lib/dto/users/create-user.dto';
 
 
 
@@ -38,6 +38,6 @@ export * from './lib/interface/users/coach-role.interface';
 
 
 // CONSTANT
-// export * from './lib/constant/users-microservice.constant';
+export * from './lib/constant/users-microservice.constant';
 
 
