@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
 
 import { getMongoConnectionUrl } from '@fitfriends-backend/core';
-import { UserEntity, UserEntitySchema } from './entity/user.entity';
+import { BaseUserEntity, CoachUserEntity, CoachUserEntitySchema, StudentUserEntity, StudentUserEntitySchema, UserEntitySchema } from './entity/user.entity';
 
 @Module({
   imports: [
@@ -23,10 +23,16 @@ import { UserEntity, UserEntitySchema } from './entity/user.entity';
       }),
     }),
     MongooseModule.forFeature([
-      { name: UserEntity.name, schema: UserEntitySchema, },
+      { name: BaseUserEntity.name, schema: UserEntitySchema, discriminators: [
+        { name: StudentUserEntity.name, schema: StudentUserEntitySchema, },
+        { name: CoachUserEntity.name, schema: CoachUserEntitySchema, },
+      ], },
     ]),
   ],
   providers: [
+    UsersRepositoryService,
+  ],
+  exports: [
     UsersRepositoryService,
   ],
 })
