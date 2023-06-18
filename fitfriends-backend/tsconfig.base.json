@@ -11,10 +11,15 @@
     "target": "es2015",
     "module": "esnext",
     "lib": ["es2020", "dom"],
+    // "skipLibCheck": false,
+    // "skipDefaultLibCheck": false,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@fitfriends-backend/core": ["libs/core/src/index.ts"],
+      "@fitfriends-backend/shared-types": ["libs/shared-types/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

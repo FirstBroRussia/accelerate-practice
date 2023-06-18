@@ -40,4 +40,6 @@ Thumbs.db
 
 # Custom
 
-*/env/
+/apps/**/env/
+
+/apps/**/db/

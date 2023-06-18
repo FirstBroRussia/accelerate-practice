@@ -1,0 +1,66 @@
+POST http://127.0.0.1:14001/users/checkemail
+Content-Type: application/json
+
+{
+  "email": "aaa@bbb.com"
+}
+
+####
+
+
+POST http://127.0.0.1:14001/users/register
+Content-Type: application/json
+
+{
+  "name": "В",
+  "email": "aaaaa@bbb.com",
+  "password": "12345678",
+  "avatar": "aaa.jpg",
+  "gender": "Men",
+  "dateOfBirth": "05.10.1990",
+  "role": "Student",
+  "description": "FFFFaaaaDDDDssss",
+  "location": "Pionerskaya",
+  "imageForSite": "ImageOne",
+  "skillLevel": "Beginner",
+  "trainingType": [ "Yoga", "Running" ],
+  "timeForTraining": "EightyMin",
+  "allCaloriesToReset": 5000,
+  "caloriesToResetInDay": 1000,
+  "trainingIsReady": true
+}
+
+###
+
+POST http://127.0.0.1:14001/users/register
+Content-Type: application/json
+
+{
+  "name": "В",
+  "email": "aaaaas@bbb.com",
+  "password": "12345678",
+  "avatar": "aaa.jpg",
+  "gender": "Men",
+  "dateOfBirth": "05.10.1990",
+  "role": "Coach",
+  "description": "FFFFaaaaDDDDssss",
+  "location": "Pionerskaya",
+  "imageForSite": "ImageOne",
+  "skillLevel": "Beginner",
+  "trainingType": [ "Yoga", "Running" ],
+  "certificates": "EightyMin.pdf",
+  "awardsToCoach": "dsaDASDSADASDASdsadSADsad",
+  "personalTraining": true
+}
+
+###
+
+POST http://127.0.0.1:14001/users/find
+Content-Type: application/json
+
+{
+  "email": "aaaaas@bbb.com"
+}
+
+###
+
