@@ -8,11 +8,14 @@ import { Request } from 'express';
 import * as mime from 'mime-types';
 
 
-import { BadRequestException, CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import { BadRequestException, CallHandler, ExecutionContext, Inject, Injectable, Logger, NestInterceptor, Scope } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { BffMicroserviceEnvInterface } from '../interface/bff-microservice-env.interface';
 import { checkString } from '@fitfriends-backend/core';
+import { ExpressUploadFileType, UserRoleEnum } from '@fitfriends-backend/shared-types';
+import { UsersMicroserviceClientService } from '../../app/users-microservice-client/users-microservice-client.service';
+import { isEmail } from 'class-validator';
 
 
 const ONE_MEGABYTE_SIZE = 1024 * 1024; // В мегабайтах
@@ -39,13 +42,14 @@ type FileStreamCompletedType = {
 };
 
 
-@Injectable()
-export class CreateUserUploadFilesInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(CreateUserUploadFilesInterceptor.name);
+@Injectable({ scope: Scope.TRANSIENT })
+export class CreateUserInterceptor implements NestInterceptor {
+  private readonly logger = new Logger(CreateUserInterceptor.name);
 
   constructor (
     private files: FileOptionsType[],
     private readonly config: ConfigService<BffMicroserviceEnvInterface>,
+    private readonly usersMicroserviceClient: UsersMicroserviceClientService,
   ) { }
 
 
@@ -56,7 +60,7 @@ export class CreateUserUploadFilesInterceptor implements NestInterceptor {
     return await new Promise((resolve, reject) => {
       const bb = busboy({ headers: request.headers });
 
-      const files: any[] = [];
+      const files: ExpressUploadFileType[] = [];
       const fields: Record<string, unknown> = {}
       const fileCounts: Record<string, number> = {};
 
@@ -172,13 +176,49 @@ export class CreateUserUploadFilesInterceptor implements NestInterceptor {
         fields[fieldname] = value;
       });
 
-      bb.on('finish', () => {
+      bb.on('finish', async () => {
         if (isErrorOccurred) {
           return;
         }
 
+        const email = fields['email'] as string;
+
+        if (!isEmail(email)) {
+          isErrorOccurred = true;
+
+          const error = new BadRequestException(`Невалидный email: ${email}.`);
+          bb.emit('error', error);
+
+          return;
+        }
+
+        try {
+          await this.usersMicroserviceClient.checkEmail(email);
+        } catch (err) {
+          isErrorOccurred = true;
+
+          const error = new BadRequestException(`Пользователь с email: ${email} уже создан.`);
+          bb.emit('error', error);
+
+          return;
+        }
+
+
         for (let index = 0; index < streamFiles.length; index++) {
           const { fieldname, originalname, filename, encoding, mimetype, path, size, buffer } = streamFiles[index];
+
+          if (fields['role'] === UserRoleEnum.Student) {
+            if (fieldname === 'avatar') {
+              fields['avatar'] = path.replace(process.cwd(), '').replace(/\\+/g, '/');
+            }
+          } else if (fields['role'] === UserRoleEnum.Coach) {
+            if (fieldname === 'avatar') {
+              fields['avatar'] = path.replace(process.cwd(), '').replace(/\\+/g, '/');
+            }
+            if (fieldname === 'certificates') {
+              fields['certificates'] = path.replace(process.cwd(), '').replace(/\\+/g, '/');
+            }
+          }
 
           const writeStream = createWriteStream(path);
 

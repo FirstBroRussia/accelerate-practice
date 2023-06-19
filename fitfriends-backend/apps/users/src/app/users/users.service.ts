@@ -4,6 +4,8 @@ import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-micr
 import { UsersRepositoryService } from '../users-repository/users-repository.service';
 import { CoachCreateUserDto, StudentCreateUserDto } from '../../assets/dto/create-user.dto';
 import { CoachUserEntity, StudentUserEntity } from '../users-repository/entity/user.entity';
+import { LoginUserDto } from '@fitfriends-backend/shared-types';
+import { verifyPasswordHash } from '@fitfriends-backend/core';
 
 
 @Injectable()
@@ -33,6 +35,29 @@ export class UsersService {
 
 
     return await this.usersRepository.createUser(dto);
+  }
+
+  public async login(dto: LoginUserDto): Promise<any> {
+    const { email, password } = dto;
+
+    const existUser = await this.usersRepository.findUserByEmail(email);
+
+    if (!existUser) {
+      throw new BadRequestException(`Пользователя с email: ${email} не существует.`);
+    }
+
+    const isVerifyPassword = await verifyPasswordHash(password, existUser.passwordHash);
+
+    if (!isVerifyPassword) {
+      throw new BadRequestException(`Неверный пароль.`);
+    }
+
+    /////////////////////////
+    // Создание JWT токенов и внесение записей в БД
+    //////////////////
+
+
+    return true;
   }
 
   public async find(email: string) {

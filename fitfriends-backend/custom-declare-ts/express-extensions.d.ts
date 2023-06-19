@@ -8,7 +8,6 @@ type ExpressUploadFileType = {
   filename: string,
   path: string,
   size: number,
-  buffer: Buffer,
 };
 
 

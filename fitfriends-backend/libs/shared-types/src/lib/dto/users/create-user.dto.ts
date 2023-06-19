@@ -19,11 +19,12 @@ import {
 
 
 import { IsString, MinLength, MaxLength, IsEmail, IsNotEmpty, IsEnum, IsArray, ArrayMinSize, ArrayMaxSize, IsBoolean, IsInt, Min, Max } from 'class-validator';
-import { Expose } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 
 
 export class BaseCreateUserDto implements UserInterface {
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsString()
   @MinLength(UsersMicroserviceConstants.USERNAME_MIN_LENGTH)
@@ -31,11 +32,13 @@ export class BaseCreateUserDto implements UserInterface {
   public name: string;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsEmail()
   public email: string;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsString()
   @MinLength(UsersMicroserviceConstants.PASSWORD_MIN_LENGTH)
@@ -43,24 +46,29 @@ export class BaseCreateUserDto implements UserInterface {
   public password: string;
 
   @Expose()
+  @Type(() => String)
   @IsString()
   public avatar: string;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsEnum(GenderEnum)
   public gender: GenderType;
 
   @Expose()
+  @Type(() => String)
   @IsString()
   dateOfBirth: string;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsEnum(UserRoleEnum)
   public role: UserRoleType;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsString()
   @MinLength(UsersMicroserviceConstants.DESCRIPTION_MIN_LENGTH)
@@ -68,21 +76,25 @@ export class BaseCreateUserDto implements UserInterface {
   public description: string;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsEnum(LocationMetroEnum)
   public location: LocationMetroType;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsEnum(BackgroundImageForUsercardEnum)
   public imageForSite: BackgroundImageForUsercardType;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsEnum(SkillLevelEnum)
   public skillLevel: SkillLevelType;
 
   @Expose()
+  @Transform(({value}) => JSON.parse(value))
   @IsNotEmpty()
   @IsArray()
   @ArrayMinSize(UsersMicroserviceConstants.TRAINING_TYPE_MIN_COUNT)
@@ -94,11 +106,13 @@ export class BaseCreateUserDto implements UserInterface {
 
 export class StudentCreateUserDto extends BaseCreateUserDto {
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsEnum(TimeForTrainingEnum)
   public timeForTraining: TimeForTrainingType;
 
   @Expose()
+  @Type(() => Number)
   @IsNotEmpty()
   @IsInt()
   @Min(UsersMicroserviceConstants.CALORIES_RESET_ALL_DAYS_MIN_VALUE)
@@ -106,6 +120,7 @@ export class StudentCreateUserDto extends BaseCreateUserDto {
   public allCaloriesToReset: number;
 
   @Expose()
+  @Type(() => Number)
   @IsNotEmpty()
   @IsInt()
   @Min(UsersMicroserviceConstants.CALORIES_RESET_IN_DAY_MIN_VALUE)
@@ -113,6 +128,7 @@ export class StudentCreateUserDto extends BaseCreateUserDto {
   public caloriesToResetInDay: number;
 
   @Expose()
+  @Type(() => Boolean)
   @IsNotEmpty()
   @IsBoolean()
   public trainingIsReady: boolean;
@@ -120,11 +136,13 @@ export class StudentCreateUserDto extends BaseCreateUserDto {
 
 export class CoachCreateUserDto extends BaseCreateUserDto {
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsString()
   certificates: string;
 
   @Expose()
+  @Type(() => String)
   @IsNotEmpty()
   @IsString()
   @MinLength(UsersMicroserviceConstants.AWARDS_COACH_STRING_MIN_LENGTH)
@@ -132,6 +150,7 @@ export class CoachCreateUserDto extends BaseCreateUserDto {
   awardsToCoach: string;
 
   @Expose()
+  @Type(() => Boolean)
   @IsNotEmpty()
   @IsBoolean()
   personalTraining: boolean;
