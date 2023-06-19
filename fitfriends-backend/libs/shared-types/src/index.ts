@@ -66,7 +66,8 @@ export * from './lib/dto/users/create-user.dto';
 
 
 
-// MULTER
+// EXCEPTION
+export * from './lib/exception/all-exception.filter';
 
 
 

@@ -9,18 +9,22 @@ import express from 'express';
 import { resolve } from 'path';
 
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 
 import { BffModule } from './app/bff.module';
 import { ConfigService } from '@nestjs/config';
 import { BffMicroserviceEnvInterface } from './assets/interface/bff-microservice-env.interface';
+import { AllExceptionsFilter } from '@fitfriends-backend/shared-types';
 
 async function bootstrap() {
   const app = await NestFactory.create(BffModule);
 
   const config = app.get(ConfigService<BffMicroserviceEnvInterface>);
+  const httpAdapter = app.get(HttpAdapterHost);
 
   app.use('/upload', express.static(resolve('./', `${config.get('UPLOAD_FILES_DIR')}`)));
+
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   const port = config.get('PORT') || 3000;
   const host = config.get('HOST') || '127.0.0.1';

@@ -21,5 +21,8 @@
       "@fitfriends-backend/shared-types": ["libs/shared-types/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "include": [
+    "custom-declare-ts/express-extensions.d.ts",
+  ]
 }
