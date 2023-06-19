@@ -3,19 +3,31 @@
  * This is only a minimal backend to get started.
  */
 
+
+import express from 'express';
+
+import { resolve } from 'path';
+
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from './app/app.module';
+import { BffModule } from './app/bff.module';
+import { ConfigService } from '@nestjs/config';
+import { BffMicroserviceEnvInterface } from './assets/interface/bff-microservice-env.interface';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(BffModule);
 
-  const port = process.env.PORT || 3000;
+  const config = app.get(ConfigService<BffMicroserviceEnvInterface>);
 
-  await app.listen(port);
+  app.use('/upload', express.static(resolve('./', `${config.get('UPLOAD_FILES_DIR')}`)));
+
+  const port = config.get('PORT') || 3000;
+  const host = config.get('HOST') || '127.0.0.1';
+
+  await app.listen(port, host);
   Logger.log(
-    `🚀 BFF microservice is running on: http://localhost:${port}/`
+    `🚀 BFF microservice is running on: http://${host}:${port}/`
   );
 }
 
