@@ -22,3 +22,13 @@ export const fillDTOWithExcludeExtraneousValues = <T, V>(someDto: ClassConstruct
 export const fillRDO = <T, V>(someRdo: ClassConstructor<T>, plainObject: V): T => {
   return plainToInstance(someRdo, plainObject, { excludeExtraneousValues: true });
 };
+
+export const checkString = (str, searchString): boolean => {
+  if (typeof searchString === 'string') {
+    return str.includes(searchString);
+  } else if (searchString instanceof RegExp) {
+    return searchString.test(str);
+  } else {
+    throw new Error('Invalid searchString');
+  }
+}

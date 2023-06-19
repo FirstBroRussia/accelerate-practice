@@ -1,9 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "files": [],
-  "include": [
-    "custom-declare-ts/express-extensions.d.ts",
-  ],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.app.json"

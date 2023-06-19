@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsString, Max, Min, validateSync } from "class-validator";
+import { IsInt, IsString, Max, Min, validateSync } from "class-validator";
 import { BffMicroserviceEnvInterface } from "../interface/bff-microservice-env.interface";
 import { plainToInstance } from "class-transformer";
 
@@ -17,6 +17,8 @@ class BffEnvValidateConfig implements BffMicroserviceEnvInterface {
   @IsString()
   AVATAR_FILE_SIZE_LIMIT: string;
 
+  @IsString()
+  USERS_MICROSERVICE_URL: string;
 
 }
 

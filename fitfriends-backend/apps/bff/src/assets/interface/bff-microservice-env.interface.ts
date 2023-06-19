@@ -5,6 +5,8 @@ export interface BffMicroserviceEnvInterface {
   UPLOAD_FILES_DIR: string;
   AVATAR_FILE_SIZE_LIMIT: string;
 
+  USERS_MICROSERVICE_URL: string;
+
   // MONGO_DB_HOST: string;
   // MONGO_DB_PORT: number;
   // MONGO_DB_USERNAME: string;

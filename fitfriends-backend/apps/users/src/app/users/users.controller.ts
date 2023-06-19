@@ -1,14 +1,12 @@
 import { BadRequestException, Body, Controller, Logger, Post, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { TransformAndValidateDtoInterceptor, UserRoleEnum } from '@fitfriends-backend/shared-types';
+import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, LoginUserDto, StudentCreateUserDto, StudentCreateUserRdo, TransformAndValidateDtoInterceptor, UserRoleEnum } from '@fitfriends-backend/shared-types';
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
 
 import { UsersService } from './users.service';
 
 import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
-import { BaseCreateUserDto, CoachCreateUserDto, StudentCreateUserDto } from '../../assets/dto/create-user.dto';
-import { BaseCreateUserRdo, CoachCreateUserRdo, StudentCreateUserRdo } from '../../assets/rdo/create-user.rdo';
 import { isEnum, validate } from 'class-validator';
 
 
@@ -42,8 +40,7 @@ export class UsersController {
     }
 
     const transformDto = role === 'Student' ? fillDTOWithExcludeExtraneousValues(StudentCreateUserDto, dto)
-     : fillDTOWithExcludeExtraneousValues(CoachCreateUserDto, dto);
-
+      : fillDTOWithExcludeExtraneousValues(CoachCreateUserDto, dto);
 
     const errors = await validate(transformDto);
 
@@ -52,14 +49,21 @@ export class UsersController {
     }
 
     const result = await this.usersService.createUser(transformDto);
-    console.log(result);
-
 
     const rdo = role === 'Student' ? fillRDO(StudentCreateUserRdo, result)
     : fillRDO(CoachCreateUserRdo, result);
 
 
     return rdo;
+  }
+
+  @Post('login')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(LoginUserDto))
+  public async login(@Body() dto: LoginUserDto): Promise<any> {
+    const result = await this.usersService.login(dto);
+
+
+    return result;
   }
 
   // @Post('/find')
