@@ -8,14 +8,14 @@ import { Request } from 'express';
 import * as mime from 'mime-types';
 
 
-import { BadRequestException, CallHandler, ExecutionContext, Inject, Injectable, Logger, NestInterceptor, Scope } from '@nestjs/common';
+import { BadRequestException, CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { BffMicroserviceEnvInterface } from '../interface/bff-microservice-env.interface';
 import { checkString } from '@fitfriends-backend/core';
 import { ExpressUploadFileType, UserRoleEnum } from '@fitfriends-backend/shared-types';
-import { UsersMicroserviceClientService } from '../../app/users-microservice-client/users-microservice-client.service';
 import { isEmail } from 'class-validator';
+import { UsersMicroserviceClientService } from '../../app/microservice-client/users-microservice-client/users-microservice-client.service';
 
 
 const ONE_MEGABYTE_SIZE = 1024 * 1024; // В мегабайтах
@@ -42,7 +42,7 @@ type FileStreamCompletedType = {
 };
 
 
-@Injectable({ scope: Scope.TRANSIENT })
+// @Injectable()
 export class CreateUserInterceptor implements NestInterceptor {
   private readonly logger = new Logger(CreateUserInterceptor.name);
 

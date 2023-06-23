@@ -1,11 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseUserEntity, CoachUserEntity, StudentUserEntity } from './entity/user.entity';
 import { FilterQuery, Model, QueryOptions } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
-import { CoachCreateUserDto, StudentCreateUserDto } from '../../assets/dto/create-user.dto';
-import { CoachRoleInterface, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, StudentRoleInterface } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, CoachRoleInterface, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, StudentCreateUserDto, StudentRoleInterface, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
 
 @Injectable()
 export class UsersRepositoryService {
@@ -51,15 +50,15 @@ export class UsersRepositoryService {
     });
   }
 
-  public async updateUserData(id: string, dto: any): Promise<BaseUserEntity> {
+  public async updateUserData(id: string, dto: UpdateStudentUserInfoDto | UpdateCoachUserInfoDto): Promise<BaseUserEntity> {
     const user = await this.usersModel.findByIdAndUpdate(id, {
       $set: dto,
     }, {
       new: true,
     });
 
-    if (user === null) {
-      return user;
+    if (!user) {
+      throw new BadRequestException(`Пользователя с данным ID: ${id} не существует.`);
     }
 
     this.logger.log(`Обновлены данные пользователя с email: ${user.email}`);
@@ -71,6 +70,8 @@ export class UsersRepositoryService {
   public async findUsersByQueryParams(query: FindUsersQuery): Promise<BaseUserEntity[]> {
     const { role, location, skillLevel, trainingType, page, sort, } = query;
 
+    console.log(query);
+
     const filter: FilterQuery<BaseUserEntity> = {};
 
     if (role) {
@@ -80,18 +81,10 @@ export class UsersRepositoryService {
       filter['location'] = location;
     }
     if (skillLevel) {
-      if (role === 'Coach') {
-        (filter['roleInfo'] as CoachRoleInterface)['skillLevel'] = skillLevel;
-      } else if (role === 'Student') {
-        (filter['roleInfo'] as StudentRoleInterface)['skillLevel'] = skillLevel;
-      }
+      filter['skillLevel'] = skillLevel;
     }
     if (trainingType) {
-      if (role === 'Coach') {
-        (filter['roleInfo'] as CoachRoleInterface)['trainingType'] = trainingType;
-      } else if (role === 'Student') {
-        (filter['roleInfo'] as StudentRoleInterface)['trainingType'] = trainingType;
-      }
+      filter['trainingType'] = trainingType;
     }
 
 
@@ -101,7 +94,7 @@ export class UsersRepositoryService {
       sort: { createdAt: sort === 'desc' ? -1 : 1 },
     };
 
-    const users = await this.usersModel.find(filter, options);
+    const users = await this.usersModel.find(filter, null, options).exec();
 
 
     return users;

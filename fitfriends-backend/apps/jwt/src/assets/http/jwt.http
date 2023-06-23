@@ -1,0 +1,26 @@
+POST http://127.0.0.1:14002/jwt/generatetokens
+Content-Type: application/json
+
+{
+  "sub": "6491e599c1d97884bdd23c7c",
+  "email": "aaa@bbb.com",
+  "role": "Coach"
+}
+
+###
+POST http://127.0.0.1:14002/jwt/verifyaccesstoken
+Content-Type: application/json
+
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3MzYxODI2LCJleHAiOjE2ODczNjI3MjZ9.J2zG_jXwj5Q3eRJSm85L5G2WV4ngNJb8_BjBJvbp2ts"
+}
+
+###
+POST http://127.0.0.1:14002/jwt/updateaccesstoken
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3NDQwNzczLCJleHAiOjE2ODgwNDU1NzN9.9nho74z3untE_FGDZITUNF_iFbkm1SJ_3zkrMuT4zh4"
+}
+
+###

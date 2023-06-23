@@ -1,6 +1,6 @@
 // USERS
 
-POST http://127.0.0.1:14000/register
+POST http://127.0.0.1:14000/users/register
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 ###
 
-POST http://127.0.0.1:14000/register
+POST http://127.0.0.1:14000/users/register
 Content-Type: application/json
 
 {
@@ -47,12 +47,49 @@ Content-Type: application/json
 
 ###
 
-POST http://127.0.0.1:14000/login
+POST http://127.0.0.1:14000/users/login
 Content-Type: application/json
 
 {
   "email": "aaa@bbb.com",
   "password": "12345678"
 }
+
+###
+POST http://127.0.0.1:14000/users/login
+Content-Type: application/json
+
+{
+  "email": "aaaarrr@bbb.com",
+  "password": "12345678"
+}
+
+###
+POST http://127.0.0.1:14000/users/login
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3MzY5NjUyLCJleHAiOjE2ODczNzA1NTJ9.QBKNocDi7oAc2eq_QnMHDyGLzzi_H-jWUTwTOiGDwyA
+Content-Type: application/json
+
+{
+  "email": "aaa@bbb.com",
+  "password": "12345678"
+}
+
+###
+GET http://127.0.0.1:14000/users/user/6491e599c1d97884bdd23c7c
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3MzY5NjUyLCJleHAiOjE2ODczNzA1NTJ9.QBKNocDi7oAc2eq_QnMHDyGLzzi_H-jWUTwTOiGDwyA
+
+
+###
+POST http://127.0.0.1:14000/users/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3NDQwNzczLCJleHAiOjE2ODgwNDU1NzN9.9nho74z3untE_FGDZITUNF_iFbkm1SJ_3zkrMuT4zh4"
+}
+
+###
+GET http://127.0.0.1:14000/users/userslist?role=Coach&location=Pionerskaya,Udelnaya&trainingType=Running,Yoga&skillLevel=Beginner&page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDk1YTIwMDNkYTM5ZTU1ODhjZTI0YTYiLCJlbWFpbCI6ImFhYWFycnJAYmJiLmNvbSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjg3NTMxMDU5LCJleHAiOjE2ODc2MTc0NTl9.jCTbTEVUiLOMlr7YmpeY5IvM20Lwl4O94DGRDWNRx98
+
 
 ###
