@@ -113,8 +113,7 @@ export class UsersController {
 
   @Get('userslist')
   @UseInterceptors(new TransformAndValidateQueryInterceptor(FindUsersQuery))
-  // public async getUsersList(@Query() query: FindUsersQuery): Promise<(StudentUserRdo | CoachUserRdo)[]> {
-  public async getUsersList(@Query() query: FindUsersQuery): Promise<any> {
+  public async getUsersList(@Query() query: FindUsersQuery): Promise<(StudentUserRdo | CoachUserRdo)[]> {
     const usersList = await this.usersService.getUsersList(query);
 
     const rdo = query.role === 'Student' ? fillRDO(StudentUserRdo, usersList) : fillRDO(CoachUserRdo, usersList);

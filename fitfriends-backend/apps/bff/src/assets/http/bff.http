@@ -88,7 +88,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://127.0.0.1:14000/users/userslist?role=Coach&location=Pionerskaya,Udelnaya&trainingType=Running,Yoga&skillLevel=Beginner&page=1
+GET http://127.0.0.1:14000/users/userslist?role=Student&location=Pionerskaya,Udelnaya&trainingType=Running,Yoga&skillLevel=Beginner&page=1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDk1YTIwMDNkYTM5ZTU1ODhjZTI0YTYiLCJlbWFpbCI6ImFhYWFycnJAYmJiLmNvbSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjg3NTMxMDU5LCJleHAiOjE2ODc2MTc0NTl9.jCTbTEVUiLOMlr7YmpeY5IvM20Lwl4O94DGRDWNRx98
 
 
