@@ -1,13 +1,13 @@
-import { BadRequestException, Body, Controller, Logger, Post, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, LoginUserDto, StudentCreateUserDto, StudentCreateUserRdo, TransformAndValidateDtoInterceptor, UserRoleEnum } from '@fitfriends-backend/shared-types';
+import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, JwtUserPayloadDto, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
 
 import { UsersService } from './users.service';
 
 import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
-import { isEnum, validate } from 'class-validator';
+import { isEnum, isMongoId, validate } from 'class-validator';
 
 
 @Controller('users')
@@ -48,7 +48,7 @@ export class UsersController {
       throw new BadRequestException(errors.toString());
     }
 
-    const result = await this.usersService.createUser(transformDto);
+    const result = await this.usersService.create(transformDto);
 
     const rdo = role === 'Student' ? fillRDO(StudentCreateUserRdo, result)
     : fillRDO(CoachCreateUserRdo, result);
@@ -59,17 +59,68 @@ export class UsersController {
 
   @Post('login')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(LoginUserDto))
-  public async login(@Body() dto: LoginUserDto): Promise<any> {
+  public async login(@Body() dto: LoginUserDto): Promise<JwtUserPayloadDto> {
     const result = await this.usersService.login(dto);
 
 
-    return result;
+    return fillRDO(JwtUserPayloadDto, result);
   }
 
-  // @Post('/find')
-  // public async find(@Body('email') email: string) {
-  //   return await this.usersService.find(email);
-  // }
+  @Get('user/:userId')
+  public async getUserById(@Param('userId', MongoIdValidationPipe) userId: string): Promise<StudentUserRdo | CoachUserRdo> {
+    if (!isMongoId(userId)) {
+      throw new BadRequestException(`${userId} не является валидным ID пользователя.`);
+    }
 
+    const user = await this.usersService.findById(userId);
+
+    const rdo = user.role === 'Student' ? fillRDO(StudentUserRdo, user) : fillRDO(CoachUserRdo, user);
+
+
+    return rdo;
+  }
+
+  @Patch('/user/:userId')
+  public async updateUserInfo(@Param('userId', MongoIdValidationPipe) userId: string, @Body() dto: (UpdateStudentUserInfoDto | UpdateCoachUserInfoDto) & { role: UserRoleType }): Promise<any> {
+    const { role } = dto;
+
+    if (!isEnum(role, UserRoleEnum)) {
+      throw new BadRequestException('Невалидные данные, в том числе поле "role"');
+    }
+
+    const transformDto = role === 'Student' ? fillDTOWithExcludeExtraneousValues(UpdateStudentUserInfoDto, dto)
+      : fillDTOWithExcludeExtraneousValues(UpdateCoachUserInfoDto, dto);
+
+
+    const errors = await validate(transformDto, {
+      skipMissingProperties: true,
+      skipUndefinedProperties: true,
+      skipNullProperties: true,
+    });
+
+    if (errors.length > 0) {
+      throw new BadRequestException(errors.toString());
+    }
+
+    const result = await this.usersService.updateUserInfo(userId, transformDto);
+
+    const rdo = role === 'Student' ? fillRDO(StudentUserRdo, result)
+    : fillRDO(CoachUserRdo, result);
+
+
+    return rdo;
+  }
+
+  @Get('userslist')
+  @UseInterceptors(new TransformAndValidateQueryInterceptor(FindUsersQuery))
+  // public async getUsersList(@Query() query: FindUsersQuery): Promise<(StudentUserRdo | CoachUserRdo)[]> {
+  public async getUsersList(@Query() query: FindUsersQuery): Promise<any> {
+    const usersList = await this.usersService.getUsersList(query);
+
+    const rdo = query.role === 'Student' ? fillRDO(StudentUserRdo, usersList) : fillRDO(CoachUserRdo, usersList);
+
+
+    return rdo as unknown as (StudentUserRdo | CoachUserRdo)[];
+  }
 
 }

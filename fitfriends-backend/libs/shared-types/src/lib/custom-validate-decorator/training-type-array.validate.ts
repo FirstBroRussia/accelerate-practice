@@ -1,6 +1,5 @@
+import { TrainingType, TrainingTypeEnum } from "@fitfriends-backend/shared-types";
 import { ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isEnum, registerDecorator } from "class-validator";
-import { TrainingType } from "../type/users/training-type.type";
-import { TrainingTypeEnum } from "../enum/users/training-type.enum";
 
 
 @ValidatorConstraint({ name: 'TrainingTypeArrayValidator', async: true, })
@@ -33,4 +32,3 @@ export function IsTrainingTypeArrayValidator(validationOptions?: ValidationOptio
     });
   };
 }
-

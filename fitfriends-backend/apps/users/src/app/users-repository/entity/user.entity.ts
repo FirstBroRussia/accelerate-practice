@@ -1,12 +1,9 @@
 import { Document } from "mongoose";
 
-import { BackgroundImageForUsercardType, CoachRoleInterface, GenderType, LocationMetroType, SkillLevelType, StudentRoleInterface, TimeForTrainingType, TrainingType, UserInterface, UserRoleInfoType, UserRoleType, } from '@fitfriends-backend/shared-types';
+import { BackgroundImageForUsercardType, CoachCreateUserDto, CoachRoleInterface, GenderType, LocationMetroType, SkillLevelType, StudentCreateUserDto, StudentRoleInterface, TimeForTrainingType, TrainingType, UserInterface, UserRoleType, } from '@fitfriends-backend/shared-types';
+import { generateHash } from "@fitfriends-backend/core";
+
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
-import { createPasswordHash } from "@fitfriends-backend/core";
-import { BaseCreateUserDto, CoachCreateUserDto, StudentCreateUserDto } from "../../../assets/dto/create-user.dto";
-
-
-const BCRYPT_SALT_ROUNDS = 10;
 
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -96,28 +93,6 @@ export class BaseUserEntity implements UserInterface {
   })
   trainingType?: TrainingType[];
 
-
-  public async fillObject(dto: BaseCreateUserDto): Promise<this> {
-    const { name, email, password, gender, role, dateOfBirth, description, location, avatar, imageForSite, skillLevel, trainingType } = dto;
-
-    this.name = name;
-    this.email = email;
-    this.passwordHash = await createPasswordHash(password, BCRYPT_SALT_ROUNDS);
-    this.gender = gender;
-    this.role = role;
-    this.dateOfBirth = dateOfBirth;
-    this.description = description;
-    this.location = location;
-    this.avatar = avatar;
-    this.imageForSite = imageForSite;
-
-    this.skillLevel = skillLevel;
-    this.trainingType = trainingType;
-
-
-    return this;
-  }
-
 }
 
 export const UserEntitySchema = SchemaFactory.createForClass(BaseUserEntity);
@@ -165,7 +140,7 @@ export class StudentUserEntity extends BaseUserEntity implements StudentRoleInte
 
     this.name = name;
     this.email = email;
-    this.passwordHash = await createPasswordHash(password, BCRYPT_SALT_ROUNDS);
+    this.passwordHash = await generateHash(password);
     this.gender = gender;
     this.role = role;
     this.dateOfBirth = dateOfBirth;
@@ -225,7 +200,7 @@ export class CoachUserEntity extends BaseUserEntity implements CoachRoleInterfac
 
     this.name = name;
     this.email = email;
-    this.passwordHash = await createPasswordHash(password, BCRYPT_SALT_ROUNDS);
+    this.passwordHash = await generateHash(password);
     this.gender = gender;
     this.role = role;
     this.dateOfBirth = dateOfBirth;

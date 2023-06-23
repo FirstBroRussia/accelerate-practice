@@ -18,7 +18,9 @@ export class TransformAndValidateQueryInterceptor implements NestInterceptor {
     const req = context.switchToHttp().getRequest<Request>();
 
     const transformQuery = fillDTOWithExcludeExtraneousValues(this.classConstructor, req.query);
-    const errors = await validate(transformQuery);
+    const errors = await validate(transformQuery, {
+      skipMissingProperties: true,
+    });
 
     if (errors.length > 0) {
       throw new BadRequestException(errors.toString());

@@ -7,13 +7,15 @@ export const getMongoConnectionUrl = ({username, password, host, port, databaseN
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
 };
 
-export const createPasswordHash = async (password: string, saltRounds: number): Promise<string> => {
-  return await bcrypt.hash(password, saltRounds);
-};
+export const generateHash = async (string: string): Promise<string> => {
+  const saltRounds = 10; // Количество раундов хеширования
 
-export const verifyPasswordHash = async (password: string, hashedPassword: string): Promise<boolean> => {
-  return await bcrypt.compare(password, hashedPassword);
-};
+  return await bcrypt.hash(string, saltRounds);
+}
+
+export const compareHash = async (targetString: string, generatedHash: string): Promise<boolean> => {
+  return await bcrypt.compare(targetString, generatedHash);
+}
 
 export const fillDTOWithExcludeExtraneousValues = <T, V>(someDto: ClassConstructor<T>, plainObject: V): T => {
   return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });

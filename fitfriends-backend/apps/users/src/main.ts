@@ -6,7 +6,7 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from './app/app.module';
+import { AppModule } from './app/users.module';
 import { ConfigService } from '@nestjs/config';
 import { UsersMicroserviceEnvInterface } from './assets/interface/users-microservice-env.interface';
 

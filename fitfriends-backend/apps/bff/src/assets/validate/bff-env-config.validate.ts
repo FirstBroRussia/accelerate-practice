@@ -17,8 +17,12 @@ class BffEnvValidateConfig implements BffMicroserviceEnvInterface {
   @IsString()
   AVATAR_FILE_SIZE_LIMIT: string;
 
+
   @IsString()
   USERS_MICROSERVICE_URL: string;
+
+  @IsString()
+  JWT_MICROSERVICE_URL: string;
 
 }
 

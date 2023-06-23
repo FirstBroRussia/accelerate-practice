@@ -6,6 +6,7 @@ export interface BffMicroserviceEnvInterface {
   AVATAR_FILE_SIZE_LIMIT: string;
 
   USERS_MICROSERVICE_URL: string;
+  JWT_MICROSERVICE_URL: string;
 
   // MONGO_DB_HOST: string;
   // MONGO_DB_PORT: number;
