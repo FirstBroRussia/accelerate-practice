@@ -1,7 +1,7 @@
 {
-  "name": "cabinet",
+  "name": "trainings",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/cabinet/src",
+  "sourceRoot": "apps/trainings/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -11,12 +11,12 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/cabinet",
-        "main": "apps/cabinet/src/main.ts",
-        "tsConfig": "apps/cabinet/tsconfig.app.json",
-        "assets": ["apps/cabinet/src/assets"],
+        "outputPath": "dist/apps/trainings",
+        "main": "apps/trainings/src/main.ts",
+        "tsConfig": "apps/trainings/tsconfig.app.json",
+        "assets": ["apps/trainings/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/cabinet/webpack.config.js"
+        "webpackConfig": "apps/trainings/webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -27,14 +27,14 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "cabinet:build"
+        "buildTarget": "trainings:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "cabinet:build:development"
+          "buildTarget": "trainings:build:development"
         },
         "production": {
-          "buildTarget": "cabinet:build:production"
+          "buildTarget": "trainings:build:production"
         }
       }
     },
@@ -42,14 +42,14 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/cabinet/**/*.ts"]
+        "lintFilePatterns": ["apps/trainings/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/cabinet/jest.config.ts",
+        "jestConfig": "apps/trainings/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {

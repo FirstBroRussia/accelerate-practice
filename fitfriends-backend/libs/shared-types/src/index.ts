@@ -3,6 +3,7 @@ export * from './lib/constant/common.constant';
 
 
 export * from './lib/constant/users-microservice.constant';
+export * from './lib/constant/trainings-microservice.constant';
 
 
 
@@ -74,6 +75,10 @@ export * from './lib/dto/users/update-coach-user-info.dto';
 export * from './lib/dto/users/logouted-user.dto';
 
 
+export * from './lib/dto/cabinet/create-training.dto';
+export * from './lib/dto/cabinet/update-training.dto';
+
+
 // RDO
 export * from './lib/rdo/common/jwt-access-token.rdo';
 
@@ -82,6 +87,9 @@ export * from './lib/rdo/users/login-user.rdo';
 export * from './lib/rdo/users/jwt-user-payload.rdo';
 export * from './lib/rdo/users/student-user-info.rdo';
 export * from './lib/rdo/users/coach-user-info.rdo';
+
+
+export * from './lib/rdo/cabinet/training.rdo';
 
 
 // PIPE

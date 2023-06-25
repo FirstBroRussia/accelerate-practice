@@ -1,8 +1,8 @@
 import { IsInt, IsString, Max, Min, validateSync } from "class-validator";
-import { CabinetMicroserviceEnvInterface } from "../interface/cabinet-microservice-env.interface";
+import { TrainingsMicroserviceEnvInterface } from "../interface/trainings-microservice-env.interface";
 import { plainToInstance } from "class-transformer";
 
-class CabinetEnvValidateConfig implements CabinetMicroserviceEnvInterface {
+class TrainingsEnvValidateConfig implements TrainingsMicroserviceEnvInterface {
   @IsString()
   HOST: string;
 
@@ -35,8 +35,8 @@ class CabinetEnvValidateConfig implements CabinetMicroserviceEnvInterface {
 
 }
 
-export function cabinetEnvValidateConfig(config: Record<string, unknown>) {
-  const transformConfig = plainToInstance(CabinetEnvValidateConfig, config, { enableImplicitConversion: true, });
+export function trainingsEnvValidateConfig(config: Record<string, unknown>) {
+  const transformConfig = plainToInstance(TrainingsEnvValidateConfig, config, { enableImplicitConversion: true, });
 
   const errors = validateSync(transformConfig);
 

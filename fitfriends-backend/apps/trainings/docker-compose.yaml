@@ -3,11 +3,11 @@ services:
   mongodb:
     image: mongo
     restart: always
-    container_name: fitfriends-cabinet-db
+    container_name: fitfriends-trainings-db
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: test
-      MONGO_INITDB_DATABASE: fitfriends-cabinet
+      MONGO_INITDB_DATABASE: fitfriends-trainings
     ports:
       - 15003:27017
     healthcheck:
@@ -22,7 +22,7 @@ services:
   mongodb-express:
     image: mongo-express
     restart: always
-    container_name: fitfriends-cabinet-db-express
+    container_name: fitfriends-trainings-db-express
     ports:
       - 23003:8081
     environment:

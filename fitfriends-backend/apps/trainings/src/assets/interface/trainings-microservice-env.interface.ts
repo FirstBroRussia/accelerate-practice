@@ -1,4 +1,4 @@
-export interface CabinetMicroserviceEnvInterface {
+export interface TrainingsMicroserviceEnvInterface {
   HOST: string;
   PORT: number;
 

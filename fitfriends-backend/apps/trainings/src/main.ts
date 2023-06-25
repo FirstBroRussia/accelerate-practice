@@ -6,16 +6,18 @@
 import { Logger } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 
-import { CabinetModule } from './app/cabinet.module';
-import { ConfigService } from '@nestjs/config';
-import { CabinetMicroserviceEnvInterface } from './assets/interface/cabinet-microservice-env.interface';
+import { TrainingsModule } from './app/trainings.module';
 
 import { AllExceptionsFilter } from '@fitfriends-backend/shared-types';
+import { ConfigService } from '@nestjs/config';
+import { TrainingsMicroserviceEnvInterface } from './assets/interface/trainings-microservice-env.interface';
+
 
 async function bootstrap() {
-  const app = await NestFactory.create(CabinetModule);
+  const app = await NestFactory.create(TrainingsModule);
 
-  const config = app.get(ConfigService<CabinetMicroserviceEnvInterface>);
+
+  const config = app.get(ConfigService<TrainingsMicroserviceEnvInterface>);
   const httpAdapter = app.get(HttpAdapterHost);
 
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
@@ -25,7 +27,7 @@ async function bootstrap() {
 
   await app.listen(port, host);
   Logger.log(
-    `🚀 Cabinet microservice is running on: http://${host}:${port}/`
+    `🚀 Trainings microservice is running on: http://${host}:${port}/`
   );
 }
 
