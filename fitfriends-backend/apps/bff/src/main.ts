@@ -22,7 +22,7 @@ async function bootstrap() {
   const config = app.get(ConfigService<BffMicroserviceEnvInterface>);
   const httpAdapter = app.get(HttpAdapterHost);
 
-  app.use('/upload', express.static(resolve('./', `${config.get('UPLOAD_FILES_DIR')}`)));
+  app.use('/uploads', express.static(resolve('./', `${config.get('UPLOAD_FILES_DIR')}`)));
 
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 

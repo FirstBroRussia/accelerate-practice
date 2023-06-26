@@ -57,7 +57,7 @@ export class FindUsersQuery {
   })
   @Type(() => Number)
   @IsInt()
-  @Min(1)
+  @Min(ONE_VALUE)
   page?: number;
 
   @Expose()

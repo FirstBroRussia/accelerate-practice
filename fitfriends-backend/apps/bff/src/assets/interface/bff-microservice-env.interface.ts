@@ -7,6 +7,8 @@ export interface BffMicroserviceEnvInterface {
 
   USERS_MICROSERVICE_URL: string;
   JWT_MICROSERVICE_URL: string;
+  TRAININGS_MICROSERVICE_URL: string;
+  ORDERS_MICROSERVICE_URL: string;
 
   // MONGO_DB_HOST: string;
   // MONGO_DB_PORT: number;

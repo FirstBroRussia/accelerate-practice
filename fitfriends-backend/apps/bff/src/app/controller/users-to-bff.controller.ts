@@ -1,16 +1,23 @@
+import * as fs from 'fs';
+
+import { Request } from 'express';
+
+import { isEmail, isEnum, isMongoId, validate } from 'class-validator';
+
 import { BadRequestException, Body, Controller, ForbiddenException, Get, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { BffMicroserviceEnvInterface } from '../../../assets/interface/bff-microservice-env.interface';
-import { JwtMicroserviceClientService } from '../../microservice-client/jwt-microservice-client/jwt-microservice-client.service';
-import { isEmail, isEnum, isMongoId, validate } from 'class-validator';
-import { CreateUserInterceptor } from '../../../assets/interceptor/create-user.interceptor';
-import { CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, JwtRefreshTokenDto, JwtUserPayloadRdo, JwtValidationPipe, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum } from '@fitfriends-backend/shared-types';
+
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
-import { UsersMicroserviceClientService } from '../../microservice-client/users-microservice-client/users-microservice-client.service';
+import { CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, JwtRefreshTokenDto, JwtUserPayloadRdo, JwtValidationPipe, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum } from '@fitfriends-backend/shared-types';
+
+import { BffMicroserviceEnvInterface } from '../../assets/interface/bff-microservice-env.interface';
+import { JwtMicroserviceClientService } from '../microservice-client/jwt-microservice-client/jwt-microservice-client.service';
+import { CreateUserInterceptor } from '../../assets/interceptor/create-user.interceptor';
+import { UsersMicroserviceClientService } from '../microservice-client/users-microservice-client/users-microservice-client.service';
 import { JwtAuthGuard } from 'apps/bff/src/assets/guard/jwt-auth.guard';
-import { Request } from 'express';
 import { CheckJwtAccessTokenInterceptor } from 'apps/bff/src/assets/interceptor/check-jwt-access-token.interceptor';
 import { UpdateUserInterceptor } from 'apps/bff/src/assets/interceptor/update-user.interceptor';
+import { join, resolve } from 'path';
 
 
 @Controller('users')
@@ -146,7 +153,40 @@ export class UsersToBffController {
 
     transformDto['role'] = role;
 
+    let oldAvatarPath = null;
+    let oldCertificatesPath = null;
+
+    if (role === 'Student' && dto.avatar) {
+      const { avatar } = await this.usersMicroserviceClient.getUserInfo(userId);
+
+      oldAvatarPath = avatar;
+    } else if (role === 'Coach') {
+      if (!dto.avatar && !(dto as UpdateCoachUserInfoDto).certificates) {
+        return;
+      }
+
+      const { avatar, certificates } = await this.usersMicroserviceClient.getUserInfo(userId) as CoachUserRdo;
+
+      oldAvatarPath = avatar;
+      oldCertificatesPath = certificates;
+    }
+
     const result = await this.usersMicroserviceClient.updateUserInfo(userId, transformDto);
+
+    if (oldAvatarPath) {
+      fs.rm(resolve(join('./', oldAvatarPath)), (err) => {
+        if (err) {
+          this.logger.error(err);
+        }
+      })
+    }
+    if (oldCertificatesPath) {
+      fs.rm(resolve(join('./', oldCertificatesPath)), (err) => {
+        if (err) {
+          this.logger.error(err);
+        }
+      })
+    }
 
     const rdo = role === 'Student' ? fillRDO(StudentUserRdo, result) : fillRDO(CoachUserRdo, result);
 

@@ -70,8 +70,6 @@ export class UsersRepositoryService {
   public async findUsersByQueryParams(query: FindUsersQuery): Promise<BaseUserEntity[]> {
     const { role, location, skillLevel, trainingType, page, sort, } = query;
 
-    console.log(query);
-
     const filter: FilterQuery<BaseUserEntity> = {};
 
     if (role) {

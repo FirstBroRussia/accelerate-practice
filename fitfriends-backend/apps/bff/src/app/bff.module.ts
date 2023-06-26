@@ -8,8 +8,11 @@ import { ConfigModule } from '@nestjs/config';
 import { bffEnvValidateConfig } from '../assets/validate/bff-env-config.validate';
 import { CreateUserInterceptor } from '../assets/interceptor/create-user.interceptor';
 import { JwtMicroserviceClientModule } from './microservice-client/jwt-microservice-client/jwt-microservice-client.module';
-import { UsersToBffController } from './controller/users/users-to-bff.controller';
+import { UsersToBffController } from './controller/users-to-bff.controller';
 import { UsersMicroserviceClientModule } from './microservice-client/users-microservice-client/users-microservice-client.module';
+import { CabinetMicroserviceClientModule } from './microservice-client/cabinet-microservice-client/cabinet-microservice-client.module';
+import { TrainingsMicroserviceClientModule } from './microservice-client/trainings-microservice-client/trainings-microservice-client.module';
+import { CabinetToBffController } from './controller/cabinet-to-bff.controller';
 
 @Module({
   imports: [
@@ -21,8 +24,10 @@ import { UsersMicroserviceClientModule } from './microservice-client/users-micro
     }),
     UsersMicroserviceClientModule,
     JwtMicroserviceClientModule,
+    CabinetMicroserviceClientModule,
+    TrainingsMicroserviceClientModule,
   ],
-  controllers: [BffController, UsersToBffController],
+  controllers: [BffController, UsersToBffController, CabinetToBffController],
   providers: [BffService, CreateUserInterceptor],
 })
 export class BffModule {}

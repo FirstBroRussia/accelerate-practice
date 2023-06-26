@@ -2,6 +2,9 @@ import * as bcrypt from 'bcrypt';
 
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 
+import { CoachTrainingDurationType, TimeForTrainingType } from '@fitfriends-backend/shared-types';
+import { BadRequestException } from '@nestjs/common';
+
 
 export const getMongoConnectionUrl = ({username, password, host, port, databaseName, authDatabase}): string => {
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
@@ -34,3 +37,13 @@ export const checkString = (str, searchString): boolean => {
     throw new Error('Invalid searchString');
   }
 }
+
+export const getTimeForTraining = (duration: CoachTrainingDurationType): TimeForTrainingType[] => {
+  switch (duration) {
+    case 'TenToThirtyMin': return ['ThirtyMin'];
+    case 'ThirtyToFiftyMin': return ['ThirtyMin', 'FiftyMin'];
+    case 'FiftyToEightyMin': return ['FiftyMin', 'EightyMin'];
+    case 'EightyToHundredMin': return ['EightyMin', 'OneHundredMin'];
+    default: throw new BadRequestException('Некорректный запрос в поле duration');
+  }
+};
