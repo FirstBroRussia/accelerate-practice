@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 import { TrainingsMicroserviceEnvInterface } from '../../assets/interface/trainings-microservice-env.interface';
 import { getMongoConnectionUrl } from '@fitfriends-backend/core';
-import { TrainingEntity, TrainingEntitySchema } from './entity/training.entity';
+import { CoachTrainingEntity, TrainingEntitySchema } from './entity/training.entity';
 
 
 @Module({
@@ -23,7 +23,7 @@ import { TrainingEntity, TrainingEntitySchema } from './entity/training.entity';
       }),
     }),
     MongooseModule.forFeature([
-      { name: TrainingEntity.name, schema: TrainingEntitySchema },
+      { name: CoachTrainingEntity.name, schema: TrainingEntitySchema },
     ]),
   ],
   providers: [TrainingsRepositoryService],

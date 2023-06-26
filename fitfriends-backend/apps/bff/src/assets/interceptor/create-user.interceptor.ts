@@ -207,6 +207,7 @@ export class CreateUserInterceptor implements NestInterceptor {
         for (let index = 0; index < streamFiles.length; index++) {
           const { fieldname, originalname, filename, encoding, mimetype, path, size, buffer } = streamFiles[index];
 
+
           if (fields['role'] === UserRoleEnum.Student) {
             if (fieldname === 'avatar') {
               fields['avatar'] = path.replace(process.cwd(), '').replace(/\\+/g, '/');

@@ -7,7 +7,8 @@ import { fillDTOWithExcludeExtraneousValues } from '@fitfriends-backend/core';
 
 
 type InterceptorOptionsType = {
-  isControllerUpdateMethod: boolean,
+  isControllerUpdateMethod?: boolean,
+  isQueryDto?: boolean,
 };
 
 @Injectable()
@@ -26,7 +27,7 @@ export class TransformAndValidateDtoInterceptor implements NestInterceptor {
 
     let errors;
 
-    if (this.options && this.options.isControllerUpdateMethod) {
+    if (this.options && (this.options.isControllerUpdateMethod || this.options.isQueryDto)) {
       errors = await validate(transformDto, {
         skipMissingProperties: true,
       });

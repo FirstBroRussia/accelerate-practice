@@ -21,6 +21,9 @@ export * from './lib/enum/users/time-for-training.enum';
 export * from './lib/enum/users/background-image.enum';
 
 
+export * from './lib/enum/cabinet/coach-training-duration.enum';
+
+
 // TYPE
 export * from './lib/type/common/asc-desc-sort.type';
 export * from './lib/type/common/express-upload-file.type';
@@ -37,11 +40,18 @@ export * from './lib/type/users/background-image-for-usercard.type';
 export * from './lib/type/users/user-role-info.type';
 
 
+export * from './lib/type/cabinet/coach-training-duration.type';
+
+
 
 // INTERFACE
 export * from './lib/interface/users/user.interface';
 export * from './lib/interface/users/student-role.interface';
 export * from './lib/interface/users/coach-role.interface';
+
+
+export * from './lib/interface/cabinet/coach-training.interface';
+
 
 
 
@@ -61,6 +71,9 @@ export * from './lib/interceptor/transform-and-validate-query.interceptor';
 export * from './lib/query/find-users.query';
 
 
+export * from './lib/query/find-coach-trainings.query';
+
+
 
 // DTO
 export * from './lib/dto/common/jwt-access-token.dto';
@@ -75,8 +88,9 @@ export * from './lib/dto/users/update-coach-user-info.dto';
 export * from './lib/dto/users/logouted-user.dto';
 
 
-export * from './lib/dto/cabinet/create-training.dto';
-export * from './lib/dto/cabinet/update-training.dto';
+export * from './lib/dto/cabinet/create-coach-training.dto';
+export * from './lib/dto/cabinet/update-coach-training.dto';
+export * from './lib/dto/cabinet/update-rating-coach-training.dto';
 
 
 // RDO
@@ -89,7 +103,7 @@ export * from './lib/rdo/users/student-user-info.rdo';
 export * from './lib/rdo/users/coach-user-info.rdo';
 
 
-export * from './lib/rdo/cabinet/training.rdo';
+export * from './lib/rdo/cabinet/coach-training.rdo';
 
 
 // PIPE

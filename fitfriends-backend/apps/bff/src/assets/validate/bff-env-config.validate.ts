@@ -24,6 +24,12 @@ class BffEnvValidateConfig implements BffMicroserviceEnvInterface {
   @IsString()
   JWT_MICROSERVICE_URL: string;
 
+  @IsString()
+  TRAININGS_MICROSERVICE_URL: string;
+
+  @IsString()
+  ORDERS_MICROSERVICE_URL: string;
+
 }
 
 export function bffEnvValidateConfig(config: Record<string, unknown>) {
