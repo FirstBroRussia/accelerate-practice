@@ -203,7 +203,6 @@ export class UsersToBffController {
   @Get('userslist')
   @UseInterceptors(new TransformAndValidateQueryInterceptor(FindUsersQuery))
   @UseGuards(JwtAuthGuard)
-  // public async getUsersList(@Query() query: FindUsersQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
     public async getUsersList(@Query() query: FindUsersQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<(StudentUserRdo | CoachUserRdo)[]> {
     const { role } = req.user;
 

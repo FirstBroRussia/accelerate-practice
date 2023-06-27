@@ -25,6 +25,8 @@ export class CabinetToBffController {
   ) { }
 
 
+  // TRAININGS
+
   @Post('trainings')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateCoachTrainingDto))
   @UseInterceptors(new CreateCoachTrainingInterceptor([
@@ -119,5 +121,9 @@ export class CabinetToBffController {
 
     await this.trainingsMicroserviceClient.updateRating(trainingId, creatorUserId, dto);
   }
+
+  // ---------------------------
+
+
 
 }

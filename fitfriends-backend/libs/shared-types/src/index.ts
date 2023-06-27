@@ -93,6 +93,7 @@ export * from './lib/dto/cabinet/update-coach-training.dto';
 export * from './lib/dto/cabinet/update-rating-coach-training.dto';
 
 
+
 // RDO
 export * from './lib/rdo/common/jwt-access-token.rdo';
 
