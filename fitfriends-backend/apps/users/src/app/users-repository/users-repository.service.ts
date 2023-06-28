@@ -4,7 +4,7 @@ import { BaseUserEntity, CoachUserEntity, StudentUserEntity } from './entity/use
 import { FilterQuery, Model, QueryOptions } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
-import { CoachCreateUserDto, CoachRoleInterface, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, StudentCreateUserDto, StudentRoleInterface, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, CoachRoleInterface, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, GetFriendsListQuery, StudentCreateUserDto, StudentRoleInterface, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
 
 @Injectable()
 export class UsersRepositoryService {
@@ -96,6 +96,49 @@ export class UsersRepositoryService {
 
 
     return users;
+  }
+
+  public async getUsersListByIds(ids: string[]): Promise<BaseUserEntity[]> {
+    return await this.usersModel.find({
+      _id: { $in: ids },
+    }).exec();
+  }
+
+  public async checkFriendUserByFriendsList(id: string, friendId: string): Promise<BaseUserEntity | null> {
+    return await this.usersModel.findOne({
+      _id: id,
+      friends: { $elemMatch: { $eq: friendId, } },
+    });
+  }
+
+  public async addFriend(id: string, friendId: string): Promise<BaseUserEntity | null> {
+    return await this.usersModel.findByIdAndUpdate(id, {
+      $push: { friends: friendId, },
+    },
+    { new: true, }
+    );
+  }
+
+  public async removeFriend(id: string, friendId: string): Promise<BaseUserEntity | null> {
+    return await this.usersModel.findByIdAndUpdate(id, {
+      $pull: { friends: friendId, },
+    },
+    { new: true, }
+    );
+  }
+
+  public async getFriendsList(id: string, query: GetFriendsListQuery): Promise<BaseUserEntity | null> {
+    const { page, sort } = query;
+
+    const options: QueryOptions<BaseUserEntity> = {
+      skip: DEFAULT_PAGINATION_LIMIT * (page - 1),
+      limit: DEFAULT_PAGINATION_LIMIT,
+      sort: { createdAt: sort === 'desc' ? -1 : 1 },
+    };
+
+    return await this.usersModel.findById(id, {
+      friends: 1,
+    }, options).exec();
   }
 
 }

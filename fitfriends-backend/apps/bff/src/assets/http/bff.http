@@ -93,3 +93,40 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDk1YTIwMDNkYTM5ZTU1ODhjZ
 
 
 ###
+
+
+
+
+
+
+// CABINET
+
+GET http://127.0.0.1:14000/cabinet/trainings/64986441a8ee67fcf77fb8aa
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDk1YTIwMDNkYTM5ZTU1ODhjZTI0YTYiLCJlbWFpbCI6ImFhYWFycnJAYmJiLmNvbSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjg3NzA5OTExLCJleHAiOjE2ODc3OTYzMTF9.S25rffPs4S-SDF-RzGjsymt_8yvCEy8nbmGXAPnXbxI
+
+
+###
+GET http://127.0.0.1:14000/cabinet/trainings?minPrice=10&maxPrice=10000&minCalories=1200&maxCalories=3000&minRating=0&maxRating=4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3NzY0Mjk3LCJleHAiOjE2ODc4NTA2OTd9.ZlrfujrB-XeGMmHfnPo-Gzci52RyOKDYredHh2IrzLw
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/addfriend/649b24f08f088aeaaf5ea62e
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/addfriend/649b24f88f088aeaaf5ea633
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/removefriend/649b24f88f088aeaaf5ea633
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/list
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
+
+###

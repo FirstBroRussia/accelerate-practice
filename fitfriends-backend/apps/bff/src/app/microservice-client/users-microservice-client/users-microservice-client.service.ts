@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { CoachCreateUserDto, StudentCreateUserDto, CoachCreateUserRdo, StudentCreateUserRdo, CustomErrorResponseType, LoginUserDto, JwtUserPayloadDto, StudentUserRdo, CoachUserRdo, UpdateStudentUserInfoDto, UpdateCoachUserInfoDto, JwtRefreshTokenDto } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, StudentCreateUserDto, CoachCreateUserRdo, StudentCreateUserRdo, CustomErrorResponseType, LoginUserDto, JwtUserPayloadDto, StudentUserRdo, CoachUserRdo, UpdateStudentUserInfoDto, UpdateCoachUserInfoDto, JwtRefreshTokenDto, GetFriendsListQuery, FriendUserInfoRdo } from '@fitfriends-backend/shared-types';
 import { BffMicroserviceEnvInterface } from 'apps/bff/src/assets/interface/bff-microservice-env.interface';
 
 
@@ -135,6 +135,75 @@ export class UsersMicroserviceClientService {
 
   public async getUsersList(url: string): Promise<UpdateStudentUserInfoDto | UpdateCoachUserInfoDto> {
     const { data } = await axios.get(`${this.config.get('USERS_MICROSERVICE_URL')}${url}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).catch((err: AxiosError) => {
+      const { name, stack, response } = err;
+
+      const { message, statusCode, error } = response.data as CustomErrorResponseType;
+
+      throw new BadRequestException({
+        name: name,
+        message: message,
+        code: statusCode,
+        status: error,
+        stack: stack,
+      });
+    });
+
+
+    return data;
+  }
+
+  public async addFriend(friendUserId: string, creatorUserId: string): Promise<void> {
+    const { data } = await axios.get(`${this.config.get('USERS_MICROSERVICE_URL')}/users/addfriend/${friendUserId}/${creatorUserId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).catch((err: AxiosError) => {
+      const { name, stack, response } = err;
+
+      const { message, statusCode, error } = response.data as CustomErrorResponseType;
+
+      throw new BadRequestException({
+        name: name,
+        message: message,
+        code: statusCode,
+        status: error,
+        stack: stack,
+      });
+    });
+
+
+    return data;
+  }
+
+  public async removeFriend(friendUserId: string, creatorUserId: string): Promise<void> {
+    const { data } = await axios.get(`${this.config.get('USERS_MICROSERVICE_URL')}/users/removefriend/${friendUserId}/${creatorUserId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).catch((err: AxiosError) => {
+      const { name, stack, response } = err;
+
+      const { message, statusCode, error } = response.data as CustomErrorResponseType;
+
+      throw new BadRequestException({
+        name: name,
+        message: message,
+        code: statusCode,
+        status: error,
+        stack: stack,
+      });
+    });
+
+
+    return data;
+  }
+
+  public async getFriendsList(creatorUserId: string, dto: GetFriendsListQuery): Promise<FriendUserInfoRdo[]> {
+    const { data } = await axios.post(`${this.config.get('USERS_MICROSERVICE_URL')}/users/friendslist/${creatorUserId}`, dto, {
       headers: {
         'Content-Type': 'application/json',
       },

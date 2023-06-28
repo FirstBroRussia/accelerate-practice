@@ -69,9 +69,8 @@ export * from './lib/interceptor/transform-and-validate-query.interceptor';
 
 // QUERY
 export * from './lib/query/find-users.query';
-
-
 export * from './lib/query/find-coach-trainings.query';
+export * from './lib/query/get-friends-list.query';
 
 
 
@@ -105,6 +104,8 @@ export * from './lib/rdo/users/coach-user-info.rdo';
 
 
 export * from './lib/rdo/cabinet/coach-training.rdo';
+export * from './lib/rdo/cabinet/friend-user-info.rdo';
+export * from './lib/rdo/cabinet/friend-user-info-from-users-microservice.rdo';
 
 
 // PIPE

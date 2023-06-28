@@ -84,7 +84,6 @@ export class BaseUserEntity implements UserInterface {
   })
   skillLevel?: SkillLevelType;
 
-
   @Prop({
     required: true,
     trim: true,
@@ -92,6 +91,14 @@ export class BaseUserEntity implements UserInterface {
 
   })
   trainingType?: TrainingType[];
+
+
+  @Prop({
+    required: true,
+    type: Array,
+    default: [],
+  })
+  friends: string[];
 
 }
 

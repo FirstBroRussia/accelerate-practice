@@ -1,12 +1,12 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, JwtUserPayloadDto, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
+import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, FriendUserInfoRdoFromUsersMicroservice, GetFriendsListQuery, JwtUserPayloadDto, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
 
 import { UsersService } from './users.service';
 
-import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
+import { UsersMicroserviceEnvInterface } from '../assets/interface/users-microservice-env.interface';
 import { isEnum, isMongoId, validate } from 'class-validator';
 
 
@@ -120,6 +120,31 @@ export class UsersController {
 
 
     return rdo as unknown as (StudentUserRdo | CoachUserRdo)[];
+  }
+
+  @Get('addfriend/:friendUserId/:creatorUserId')
+  @HttpCode(HttpStatus.OK)
+  public async addFriend(@Param('friendUserId', MongoIdValidationPipe) friendUserId: string, @Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string): Promise<void> {
+    await this.usersService.addFriend(creatorUserId, friendUserId);
+  }
+
+  @Get('removefriend/:friendUserId/:creatorUserId')
+  @HttpCode(HttpStatus.OK)
+  public async removeFriend(@Param('friendUserId', MongoIdValidationPipe) friendUserId: string, @Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string): Promise<void> {
+    await this.usersService.removeFriend(creatorUserId, friendUserId);
+  }
+
+  @Post('friendslist/:creatorUserId')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(GetFriendsListQuery, {
+    isQueryDto: true,
+  }))
+  public async getFriendsList(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Body() dto: GetFriendsListQuery): Promise<FriendUserInfoRdoFromUsersMicroservice[]> {
+    const { friends } = await this.usersService.getFriendsList(creatorUserId, dto);
+
+    const usersList = await this.usersService.getUsersListByIds(friends);
+
+
+    return fillRDO(FriendUserInfoRdoFromUsersMicroservice, usersList) as unknown as FriendUserInfoRdoFromUsersMicroservice[];
   }
 
 }

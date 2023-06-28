@@ -3,7 +3,7 @@ import { join, resolve } from 'path';
 
 import { Request } from 'express';
 
-import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto } from '@fitfriends-backend/shared-types';
+import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery } from '@fitfriends-backend/shared-types';
 import { Body, Controller, Get, HttpCode, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CheckAuthUserRoleGuard } from 'apps/bff/src/assets/guard/check-auth-user-role.guard';
@@ -13,6 +13,7 @@ import { BffMicroserviceEnvInterface } from 'apps/bff/src/assets/interface/bff-m
 import { TrainingsMicroserviceClientService } from '../microservice-client/trainings-microservice-client/trainings-microservice-client.service';
 import { fillRDO } from '@fitfriends-backend/core';
 import { HttpStatusCode } from 'axios';
+import { UsersMicroserviceClientService } from '../microservice-client/users-microservice-client/users-microservice-client.service';
 
 
 @Controller('cabinet')
@@ -21,6 +22,7 @@ export class CabinetToBffController {
 
   constructor (
     private readonly config: ConfigService<BffMicroserviceEnvInterface>,
+    private readonly usersMicroserviceClient: UsersMicroserviceClientService,
     private readonly trainingsMicroserviceClient: TrainingsMicroserviceClientService,
   ) { }
 
@@ -124,6 +126,39 @@ export class CabinetToBffController {
 
   // ---------------------------
 
+  // FRIENDS
+
+
+  @Get('friends/addfriend/:friendUserId')
+  @HttpCode(HttpStatusCode.Ok)
+  @UseGuards(JwtAuthGuard)
+  public async addFriend(@Param('friendUserId', MongoIdValidationPipe) friendUserId: string, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
+    const creatorUserId = req.user.sub;
+
+    await this.usersMicroserviceClient.addFriend(friendUserId, creatorUserId);
+  }
+
+  @Get('friends/removefriend/:friendUserId')
+  @HttpCode(HttpStatusCode.Ok)
+  @UseGuards(JwtAuthGuard)
+  public async removeFriend(@Param('friendUserId', MongoIdValidationPipe) friendUserId: string, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
+    const creatorUserId = req.user.sub;
+
+    await this.usersMicroserviceClient.removeFriend(friendUserId, creatorUserId);
+  }
+
+  @Get('friends/list')
+  @UseInterceptors(new TransformAndValidateQueryInterceptor(GetFriendsListQuery))
+  @UseGuards(JwtAuthGuard)
+  // public async getFriendsList(@Req() req: Request & { user: JwtUserPayloadRdo }): Promise<StudentUserRdo | CoachUserRdo> {
+  public async getFriendsList(@Query() query: GetFriendsListQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
+    const creatorUserId = req.user.sub;
+
+    const friendsUserList = await this.usersMicroserviceClient.getFriendsList(creatorUserId, query);
+
+    console.log(friendsUserList);
+
+  }
 
 
 }
