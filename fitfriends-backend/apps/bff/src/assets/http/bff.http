@@ -111,6 +111,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkM
 
 ###
 
+
+
+
 GET http://127.0.0.1:14000/cabinet/friends/addfriend/649b24f08f088aeaaf5ea62e
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
 
@@ -130,3 +133,21 @@ GET http://127.0.0.1:14000/cabinet/friends/list
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
 
 ###
+
+
+
+POST http://127.0.0.1:14000/cabinet/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
+Content-Type: application/json
+
+{
+  "purchaseType": "Subscription",
+  "productId": "64995213f926a7bce096a1b9",
+  "productPrice": 1000,
+  "quantity": "",
+  "orderAmount": 2000,
+  "paymentMethod": "Visa"
+}
+
+###
+

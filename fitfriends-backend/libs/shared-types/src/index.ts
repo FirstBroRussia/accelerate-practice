@@ -6,6 +6,9 @@ export * from './lib/constant/users-microservice.constant';
 export * from './lib/constant/trainings-microservice.constant';
 
 
+export * from './lib/constant/orders-microservice.constant';
+
+
 
 // ENUM
 export * from './lib/enum/common/asc-desc-sort.enum';
@@ -22,6 +25,11 @@ export * from './lib/enum/users/background-image.enum';
 
 
 export * from './lib/enum/cabinet/coach-training-duration.enum';
+
+
+export * from './lib/enum/orders/product.enum';
+export * from './lib/enum/orders/payment.enum';
+
 
 
 // TYPE
@@ -43,6 +51,10 @@ export * from './lib/type/users/user-role-info.type';
 export * from './lib/type/cabinet/coach-training-duration.type';
 
 
+export * from './lib/type/orders/product.type';
+export * from './lib/type/orders/payment.type';
+
+
 
 // INTERFACE
 export * from './lib/interface/users/user.interface';
@@ -52,6 +64,8 @@ export * from './lib/interface/users/coach-role.interface';
 
 export * from './lib/interface/cabinet/coach-training.interface';
 
+
+export * from './lib/interface/orders/order.interface';
 
 
 
@@ -92,6 +106,9 @@ export * from './lib/dto/cabinet/update-coach-training.dto';
 export * from './lib/dto/cabinet/update-rating-coach-training.dto';
 
 
+export * from './lib/dto/orders/create-order.dto';
+
+
 
 // RDO
 export * from './lib/rdo/common/jwt-access-token.rdo';
@@ -106,6 +123,10 @@ export * from './lib/rdo/users/coach-user-info.rdo';
 export * from './lib/rdo/cabinet/coach-training.rdo';
 export * from './lib/rdo/cabinet/friend-user-info.rdo';
 export * from './lib/rdo/cabinet/friend-user-info-from-users-microservice.rdo';
+
+
+export * from './lib/rdo/orders/order.rdo';
+
 
 
 // PIPE

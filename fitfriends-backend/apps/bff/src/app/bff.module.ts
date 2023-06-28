@@ -12,7 +12,7 @@ import { UsersToBffController } from './controller/users-to-bff.controller';
 import { UsersMicroserviceClientModule } from './microservice-client/users-microservice-client/users-microservice-client.module';
 import { TrainingsMicroserviceClientModule } from './microservice-client/trainings-microservice-client/trainings-microservice-client.module';
 import { CabinetToBffController } from './controller/cabinet-to-bff.controller';
-
+import { OrdersMicroserviceClientModule } from './microservice-client/orders-microservice-client/orders-microservice-client.module';
 
 @Module({
   imports: [
@@ -25,6 +25,7 @@ import { CabinetToBffController } from './controller/cabinet-to-bff.controller';
     UsersMicroserviceClientModule,
     JwtMicroserviceClientModule,
     TrainingsMicroserviceClientModule,
+    OrdersMicroserviceClientModule,
   ],
   controllers: [BffController, UsersToBffController, CabinetToBffController],
   providers: [BffService, CreateUserInterceptor],

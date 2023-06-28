@@ -3,8 +3,8 @@ import { join, resolve } from 'path';
 
 import { Request } from 'express';
 
-import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery } from '@fitfriends-backend/shared-types';
-import { Body, Controller, Get, HttpCode, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
+import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery, CreateOrderDto, OrderRdo } from '@fitfriends-backend/shared-types';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CheckAuthUserRoleGuard } from 'apps/bff/src/assets/guard/check-auth-user-role.guard';
 import { JwtAuthGuard } from 'apps/bff/src/assets/guard/jwt-auth.guard';
@@ -14,6 +14,7 @@ import { TrainingsMicroserviceClientService } from '../microservice-client/train
 import { fillRDO } from '@fitfriends-backend/core';
 import { HttpStatusCode } from 'axios';
 import { UsersMicroserviceClientService } from '../microservice-client/users-microservice-client/users-microservice-client.service';
+import { OrdersMicroserviceClientService } from '../microservice-client/orders-microservice-client/orders-microservice-client.service';
 
 
 @Controller('cabinet')
@@ -24,6 +25,7 @@ export class CabinetToBffController {
     private readonly config: ConfigService<BffMicroserviceEnvInterface>,
     private readonly usersMicroserviceClient: UsersMicroserviceClientService,
     private readonly trainingsMicroserviceClient: TrainingsMicroserviceClientService,
+    private readonly ordersMicroserviceClient: OrdersMicroserviceClientService,
   ) { }
 
 
@@ -158,7 +160,41 @@ export class CabinetToBffController {
 
     console.log(friendsUserList);
 
+    // Тут еще нужно получить данные о совместных/персональных тренировках и присоединить их к соответствующим пользователям
+
   }
 
+  // --------------------------
+
+  // ORDERS
+
+  @Post('orders')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateOrderDto))
+  @UseGuards(JwtAuthGuard)
+  public async createOrder(@Body() dto: CreateOrderDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
+    if (req.user.role === 'Coach') {
+      throw new ForbiddenException('Доступ запрещен. Пользователь с ролью "Тренер" не имеет права делать заказ.');
+    }
+
+    const creatorUserId = req.user.sub;
+
+    const { productId, productPrice, quantity, orderAmount } = dto;
+
+    const { price, coachCreator } = await this.trainingsMicroserviceClient.getTrainingById(productId);
+
+    if (productPrice !== price) {
+      throw new BadRequestException('Указана неверная сумма стоимости продукта.');
+    }
+
+    if (productPrice * quantity !== orderAmount) {
+      throw new BadRequestException('Указана некорректная общая сумма заказа.');
+    }
+
+
+    const result = await this.ordersMicroserviceClient.createOrder(creatorUserId, coachCreator, dto);
+
+
+    return fillRDO(OrderRdo, result);
+  }
 
 }

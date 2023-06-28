@@ -30,7 +30,8 @@ export class FriendUserInfoRdo {
       return obj['personalTraining'];
     }
 
-    Logger.log('Не получены данные из БД по поводу готовности к тренировки.', 'FriendUserInfoRdo');
+    Logger.log('Не получены данные из БД по поводу готовности к тренировки.', FriendUserInfoRdo.name);
+
     throw new InternalServerErrorException('Внутренняя ошибка сервера. Повторите запрос еще раз.');
   })
   isReadyTraining: boolean;

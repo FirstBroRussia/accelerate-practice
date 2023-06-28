@@ -1,13 +1,6 @@
-export interface JwtMicroserviceEnvInterface {
+export interface OrdersMicroserviceEnvInterface {
   HOST: string;
   PORT: number;
-
-  ACCESS_TOKEN_SECRET: string;
-  REFRESH_TOKEN_SECRET: string;
-
-  ACCESS_TOKEN_EXPIRATION_TIME: string;
-  REFRESH_TOKEN_EXPIRATION_TIME: string;
-
 
   MONGO_DB_HOST: string;
   MONGO_DB_PORT: number;

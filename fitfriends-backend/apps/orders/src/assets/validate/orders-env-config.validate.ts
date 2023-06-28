@@ -1,8 +1,8 @@
 import { IsInt, IsString, Max, Min, validateSync } from "class-validator";
-import { JwtMicroserviceEnvInterface } from "../interface/jwt-microservice-env.interface";
+import { OrdersMicroserviceEnvInterface } from "../interface/orders-microservice-env.interface";
 import { plainToInstance } from "class-transformer";
 
-class JwtEnvValidateConfig implements JwtMicroserviceEnvInterface {
+class OrdersEnvValidateConfig implements OrdersMicroserviceEnvInterface {
   @IsString()
   HOST: string;
 
@@ -10,18 +10,6 @@ class JwtEnvValidateConfig implements JwtMicroserviceEnvInterface {
   @Min(0)
   @Max(65535)
   PORT: number;
-
-  @IsString()
-  ACCESS_TOKEN_SECRET: string;
-
-  @IsString()
-  REFRESH_TOKEN_SECRET: string;
-
-  @IsString()
-  ACCESS_TOKEN_EXPIRATION_TIME: string;
-
-  @IsString()
-  REFRESH_TOKEN_EXPIRATION_TIME: string;
 
   @IsString()
   MONGO_DB_HOST: string;
@@ -46,8 +34,8 @@ class JwtEnvValidateConfig implements JwtMicroserviceEnvInterface {
 
 }
 
-export function jwtEnvValidateConfig(config: Record<string, unknown>) {
-  const transformConfig = plainToInstance(JwtEnvValidateConfig, config, { enableImplicitConversion: true, });
+export function ordersEnvValidateConfig(config: Record<string, unknown>) {
+  const transformConfig = plainToInstance(OrdersEnvValidateConfig, config, { enableImplicitConversion: true, });
 
   const errors = validateSync(transformConfig);
 
