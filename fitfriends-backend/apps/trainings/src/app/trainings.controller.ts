@@ -1,7 +1,7 @@
 import { Body, Controller, ForbiddenException, Get, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { TrainingsService } from './trainings.service';
-import { CoachTrainingRdo, CreateCoachTrainingDto, FindCoachTrainingsQuery, MongoIdValidationPipe, TransformAndValidateDtoInterceptor, UpdateCoachTrainingDto, UpdateRatingCoachTrainingDto } from '@fitfriends-backend/shared-types';
+import { CoachTrainingRdo, CreateCoachTrainingDto, FindCoachTrainingsQuery, GetTrainingListByTrainingIdsDto, MongoIdValidationPipe, TransformAndValidateDtoInterceptor, UpdateCoachTrainingDto, UpdateRatingCoachTrainingDto } from '@fitfriends-backend/shared-types';
 import { fillRDO } from '@fitfriends-backend/core';
 
 
@@ -42,11 +42,22 @@ export class TrainingsController {
     return fillRDO(CoachTrainingRdo, result);
   }
 
+  @Post('/list/trainingsids')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(GetTrainingListByTrainingIdsDto))
+  public async getTrainingListByTrainingIds(@Body() dto: GetTrainingListByTrainingIdsDto): Promise<any> {
+    const { ids } = dto;
+
+    const result = await this.trainingsService.getTrainingListByTrainingIds(ids);
+
+
+    return fillRDO(CoachTrainingRdo, result) as unknown as CoachTrainingRdo[];
+  }
+
   @Post('/list/:creatorUserId')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(FindCoachTrainingsQuery, {
     isQueryDto: true,
   }))
-  public async getTrainingList(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Body() dto: FindCoachTrainingsQuery): Promise<CoachTrainingRdo[]> {
+  public async getTrainingListByCreatorUserId(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Body() dto: FindCoachTrainingsQuery): Promise<CoachTrainingRdo[]> {
     const result = await this.trainingsService.getTrainingListByCreatorId(creatorUserId, dto);
 
 

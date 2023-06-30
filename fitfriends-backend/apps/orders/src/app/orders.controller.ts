@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Logger, Param, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Query, UseInterceptors } from '@nestjs/common';
+
+import { CoachOrderInfoRdo, CreateOrderDto, GetOrdersQuery, MongoIdValidationPipe, StudentOrderInfoRdo, TransformAndValidateDtoInterceptor, UserRoleType, UserRoleValidationPipe } from '@fitfriends-backend/shared-types';
+import { fillRDO } from '@fitfriends-backend/core';
 
 import { OrdersService } from './orders.service';
-import { CreateOrderDto, MongoIdValidationPipe, OrderRdo, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
-import { fillRDO } from '@fitfriends-backend/core';
 
 
 @Controller('orders')
@@ -16,10 +17,23 @@ export class OrdersController {
 
   @Post('/:creatorUserId/:targetTrainingCoachUserId')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateOrderDto))
-  public async createOrder(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Param('targetTrainingCoachUserId', MongoIdValidationPipe) targetTrainingCoachUserId: string, @Body() dto: CreateOrderDto): Promise<any> {
+  public async createOrder(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Param('targetTrainingCoachUserId', MongoIdValidationPipe) targetTrainingCoachUserId: string, @Body() dto: CreateOrderDto): Promise<StudentOrderInfoRdo> {
     const result = await this.ordersService.createOrder(creatorUserId, targetTrainingCoachUserId, dto);
 
-    return fillRDO(OrderRdo, result);
+    return fillRDO(StudentOrderInfoRdo, result);
+  }
+
+  @Post('/:creatorUserId')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(GetOrdersQuery))
+  public async getOrders(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Body() dto: GetOrdersQuery): Promise<StudentOrderInfoRdo[] | CoachOrderInfoRdo[]> {
+    const { role } = dto;
+
+    const result = await this.ordersService.getOrders(creatorUserId, dto);
+
+    const rdo = role === 'Student' ? fillRDO(StudentOrderInfoRdo, result) : fillRDO(CoachOrderInfoRdo, result);
+
+
+    return rdo as unknown as StudentOrderInfoRdo[] | CoachOrderInfoRdo[];
   }
 
 

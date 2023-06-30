@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import { join, resolve } from 'path';
 
-import { Request } from 'express';
+import { Request, query } from 'express';
 
-import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery, CreateOrderDto, OrderRdo } from '@fitfriends-backend/shared-types';
-import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
+import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery, CreateOrderDto, StudentOrderInfoRdo, GetOrdersQuery, GetTrainingListByTrainingIdsDto, CoachOrderInfoRdo } from '@fitfriends-backend/shared-types';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, InternalServerErrorException, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CheckAuthUserRoleGuard } from 'apps/bff/src/assets/guard/check-auth-user-role.guard';
 import { JwtAuthGuard } from 'apps/bff/src/assets/guard/jwt-auth.guard';
@@ -109,7 +109,7 @@ export class CabinetToBffController {
   public async getTrainingsList(@Query() query: FindCoachTrainingsQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<CoachTrainingRdo[]> {
     const creatorUserId = req.user.sub;
 
-    const result = await this.trainingsMicroserviceClient.getTrainingList(creatorUserId, query);
+    const result = await this.trainingsMicroserviceClient.getTrainingListByCreatorUserId(creatorUserId, query);
 
 
     return fillRDO(CoachTrainingRdo, result) as unknown as CoachTrainingRdo[];
@@ -171,7 +171,7 @@ export class CabinetToBffController {
   @Post('orders')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateOrderDto))
   @UseGuards(JwtAuthGuard)
-  public async createOrder(@Body() dto: CreateOrderDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
+  public async createOrder(@Body() dto: CreateOrderDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<StudentOrderInfoRdo> {
     if (req.user.role === 'Coach') {
       throw new ForbiddenException('Доступ запрещен. Пользователь с ролью "Тренер" не имеет права делать заказ.');
     }
@@ -194,7 +194,47 @@ export class CabinetToBffController {
     const result = await this.ordersMicroserviceClient.createOrder(creatorUserId, coachCreator, dto);
 
 
-    return fillRDO(OrderRdo, result);
+    return fillRDO(StudentOrderInfoRdo, result);
+  }
+
+  @Get('orders')
+  @UseInterceptors(new TransformAndValidateQueryInterceptor(GetOrdersQuery))
+  @UseGuards(JwtAuthGuard)
+  public async getOrders(@Req() req: Request & { user: JwtUserPayloadRdo }, @Query() query: GetOrdersQuery): Promise<(StudentOrderInfoRdo | CoachOrderInfoRdo)[]> {
+    const { sub, role } = req.user;
+
+    query['role'] = role;
+
+    const result = await this.ordersMicroserviceClient.getOrders(sub, query);
+
+    const getTrainingListByTrainingIdsDto: GetTrainingListByTrainingIdsDto = {
+      ids: [],
+    };
+
+    result.forEach(item => {
+      getTrainingListByTrainingIdsDto?.['ids'].push(item.productId);
+    });
+
+    const trainingsList = await this.trainingsMicroserviceClient.getTrainingListByTrainingIds(getTrainingListByTrainingIdsDto);
+
+    result.map(item => {
+      for (const trainingItem of trainingsList) {
+        if (item.productId !== trainingItem.id) {
+          continue;
+        }
+
+        item['product'] = trainingItem;
+
+        break;
+      }
+
+      return item;
+    });
+
+    const rdo = role === 'Student' ? fillRDO(StudentOrderInfoRdo, result) : fillRDO(CoachOrderInfoRdo, result);
+
+
+    return rdo as unknown as (StudentOrderInfoRdo | CoachOrderInfoRdo)[];
   }
 
 }

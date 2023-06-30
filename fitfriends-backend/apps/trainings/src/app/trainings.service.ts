@@ -45,6 +45,10 @@ export class TrainingsService {
     return result;
   }
 
+  public async getTrainingListByTrainingIds(ids: string[]): Promise<CoachTrainingEntity[]> {
+    return await this.trainingsRepository.getTrainingListByTrainingIds(ids);
+  }
+
   public async getTrainingListByCreatorId(creatorUserId: string, query: FindCoachTrainingsQuery): Promise<CoachTrainingEntity[]> {
     return await this.trainingsRepository.getTrainingListByCreatorId(creatorUserId, query);
   }

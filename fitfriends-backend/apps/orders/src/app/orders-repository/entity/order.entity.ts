@@ -22,6 +22,7 @@ export class OrderEntity implements OrderInterface {
     required: true,
     trim: true,
     type: String,
+    index: true,
   })
   productId?: string;
 
@@ -57,6 +58,7 @@ export class OrderEntity implements OrderInterface {
     required: true,
     trim: true,
     type: String,
+    index: true,
   })
   creatorUserId: string;
 
@@ -64,6 +66,7 @@ export class OrderEntity implements OrderInterface {
     required: true,
     trim: true,
     type: String,
+    index: true,
   })
   coachUserId: string;
 

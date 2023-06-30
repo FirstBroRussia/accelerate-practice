@@ -2,9 +2,10 @@ import { Expose, Transform } from "class-transformer";
 import { OrderInterface } from "../../interface/orders/order.interface";
 import { PaymentType } from "../../type/orders/payment.type";
 import { ProductType } from "../../type/orders/product.type";
+import { CoachTrainingRdo } from "../cabinet/coach-training.rdo";
 
 
-export class OrderRdo implements OrderInterface {
+export class StudentOrderInfoRdo implements OrderInterface {
   @Expose()
   @Transform(({ value, obj }) => {
     try {
@@ -41,4 +42,7 @@ export class OrderRdo implements OrderInterface {
 
   @Expose()
   coachUserId: string;
+
+  @Expose()
+  product?: CoachTrainingRdo;
 }

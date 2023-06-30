@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OrdersRepositoryService } from './orders-repository/orders-repository.service';
-import { CreateOrderDto } from '@fitfriends-backend/shared-types';
+import { CreateOrderDto, GetOrdersQuery } from '@fitfriends-backend/shared-types';
 import { OrderEntity } from './orders-repository/entity/order.entity';
 
 
@@ -20,6 +20,10 @@ export class OrdersService {
 
 
     return newOrder;
+  }
+
+  public async getOrders(id: string, query: GetOrdersQuery): Promise<OrderEntity[]> {
+    return await this.ordersRepository.getOrdersByIdAndRole(id, query);
   }
 
 }

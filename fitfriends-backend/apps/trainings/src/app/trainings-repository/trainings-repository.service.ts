@@ -52,6 +52,12 @@ export class TrainingsRepositoryService {
     });
   }
 
+  public async getTrainingListByTrainingIds(ids: string[]): Promise<CoachTrainingEntity[]> {
+    return await this.coachTrainingModel.find({
+      _id: { $in: ids },
+    });
+  }
+
   public async getTrainingListByCreatorId(creatorUserId: string, query: FindCoachTrainingsQuery): Promise<CoachTrainingEntity[]> {
     const { minPrice, maxPrice, minCalories, maxCalories, minRating, maxRating, duration, page, sort } = query;
 

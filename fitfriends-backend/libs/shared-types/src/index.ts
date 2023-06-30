@@ -72,6 +72,7 @@ export * from './lib/interface/orders/order.interface';
 // CUSTOM VALIDATORS
 export * from './lib/custom-validate-decorator/training-type-array.validate';
 export * from './lib/custom-validate-decorator/location-metro-type-array.validate';
+export * from './lib/custom-validate-decorator/mongo-id-array.validate';
 
 
 
@@ -85,6 +86,7 @@ export * from './lib/interceptor/transform-and-validate-query.interceptor';
 export * from './lib/query/find-users.query';
 export * from './lib/query/find-coach-trainings.query';
 export * from './lib/query/get-friends-list.query';
+export * from './lib/query/get-orders.query';
 
 
 
@@ -101,9 +103,10 @@ export * from './lib/dto/users/update-coach-user-info.dto';
 export * from './lib/dto/users/logouted-user.dto';
 
 
-export * from './lib/dto/cabinet/create-coach-training.dto';
-export * from './lib/dto/cabinet/update-coach-training.dto';
-export * from './lib/dto/cabinet/update-rating-coach-training.dto';
+export * from './lib/dto/trainings/create-coach-training.dto';
+export * from './lib/dto/trainings/update-coach-training.dto';
+export * from './lib/dto/trainings/update-rating-coach-training.dto';
+export * from './lib/dto/trainings/get-training-list-by-training-ids.dto';
 
 
 export * from './lib/dto/orders/create-order.dto';
@@ -125,13 +128,15 @@ export * from './lib/rdo/cabinet/friend-user-info.rdo';
 export * from './lib/rdo/cabinet/friend-user-info-from-users-microservice.rdo';
 
 
-export * from './lib/rdo/orders/order.rdo';
+export * from './lib/rdo/orders/student-order-info.rdo';
+export * from './lib/rdo/orders/coach-order-info.rdo';
 
 
 
 // PIPE
 export * from './lib/pipe/mongo-id.validation-pipe';
 export * from './lib/pipe/jwt.validation-pipe';
+export * from './lib/pipe/user-role.validation-pipe';
 
 
 

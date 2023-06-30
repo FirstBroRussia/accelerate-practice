@@ -137,17 +137,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1Z
 
 
 POST http://127.0.0.1:14000/cabinet/orders
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODc4ODk0NzIsImV4cCI6MTY4Nzk3NTg3Mn0.11slaMTW_EZ3nJhmtKFBSRzxyevhlqPMK2ME0ZU2tXQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODgxMTg5NjQsImV4cCI6MTY4ODIwNTM2NH0.D5cm3uF1I-5_HHzsgI8A8ZgB2Sih1rhCe0G6d_FbGbI
 Content-Type: application/json
 
 {
   "purchaseType": "Subscription",
   "productId": "64995213f926a7bce096a1b9",
   "productPrice": 1000,
-  "quantity": "",
+  "quantity": 2,
   "orderAmount": 2000,
   "paymentMethod": "Visa"
 }
 
 ###
 
+GET http://127.0.0.1:14000/cabinet/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODgxMjEwMjAsImV4cCI6MTY4ODIwNzQyMH0.lBrPPm8db2ywWIP7dV_qoK9A2mA18uUaFVWSnW0QCT8
+
+###
