@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { BffController } from './bff.controller';
 import { BffService } from './bff.service';
 import { bffEnvValidateConfig } from '../assets/validate/bff-env-config.validate';
-import { CreateUserInterceptor } from '../assets/interceptor/create-user.interceptor';
 import { JwtMicroserviceClientModule } from './microservice-client/jwt-microservice-client/jwt-microservice-client.module';
 import { UsersToBffController } from './controller/users-to-bff.controller';
 import { UsersMicroserviceClientModule } from './microservice-client/users-microservice-client/users-microservice-client.module';

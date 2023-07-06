@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';

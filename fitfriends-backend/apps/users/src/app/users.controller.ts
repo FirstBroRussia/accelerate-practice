@@ -1,7 +1,7 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, FriendUserInfoRdo, GetFriendsListQuery, GetUserListDto, JwtUserPayloadDto, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, RequestTrainingRdo, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStatusRequestTrainingDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
+import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, FriendUserInfoRdo, GetFriendsListQuery, GetUserListDto, JwtUserPayloadDto, LoginUserDto, MongoIdValidationPipe, RequestTrainingRdo, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStatusRequestTrainingDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
 
 import { UsersService } from './users.service';
@@ -15,7 +15,6 @@ export class UsersController {
   private readonly logger = new Logger(UsersController.name);
 
   constructor (
-    private readonly config: ConfigService<UsersMicroserviceEnvInterface>,
     private readonly usersService: UsersService,
   ) { }
 

@@ -2,9 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseUserEntity, CoachUserEntity, StudentUserEntity } from './entity/user.entity';
 import { FilterQuery, Model, QueryOptions } from 'mongoose';
-import { ConfigService } from '@nestjs/config';
-import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
-import { CoachCreateUserDto, CoachRoleInterface, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, GetFriendsListQuery, RequestTrainingStatusType, StudentCreateUserDto, StudentRoleInterface, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, GetFriendsListQuery, RequestTrainingStatusType, StudentCreateUserDto, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
 import { RequestTrainingEntity } from './entity/request-training.entity';
 
 @Injectable()
@@ -12,7 +10,6 @@ export class UsersRepositoryService {
   private readonly logger = new Logger(UsersRepositoryService.name);
 
   constructor (
-    private readonly config: ConfigService<UsersMicroserviceEnvInterface>,
     @InjectModel(BaseUserEntity.name) private readonly usersModel: Model<BaseUserEntity>,
     @InjectModel(StudentUserEntity.name) private readonly studentUserModel: Model<StudentUserEntity>,
     @InjectModel(CoachUserEntity.name) private readonly coachUserModel: Model<CoachUserEntity>,

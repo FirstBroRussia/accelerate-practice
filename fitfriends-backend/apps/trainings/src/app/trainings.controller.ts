@@ -1,4 +1,4 @@
-import { Body, Controller, ForbiddenException, Get, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { TrainingsService } from './trainings.service';
 import { CoachTrainingRdo, CreateCoachTrainingDto, FindCoachTrainingsQuery, GetTrainingListByTrainingIdsDto, MongoIdValidationPipe, TransformAndValidateDtoInterceptor, UpdateCoachTrainingDto, UpdateRatingCoachTrainingDto } from '@fitfriends-backend/shared-types';

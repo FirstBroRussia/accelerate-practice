@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { JwtUserPayloadDto, LoginUserRdo, CustomErrorResponseType, CreateCommentForCommentsMicroserviceDto, GetDocumentQuery, CommentRdo, CommentsListFromCommentsMicroserviceRdo, CommentFromCommentsMicroserviceRdo } from '@fitfriends-backend/shared-types';
+import { CustomErrorResponseType, CreateCommentForCommentsMicroserviceDto, GetDocumentQuery, CommentRdo, CommentsListFromCommentsMicroserviceRdo, CommentFromCommentsMicroserviceRdo } from '@fitfriends-backend/shared-types';
 import { BffMicroserviceEnvInterface } from 'apps/bff/src/assets/interface/bff-microservice-env.interface';
 
 

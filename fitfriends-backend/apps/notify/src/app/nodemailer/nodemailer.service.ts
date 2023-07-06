@@ -1,7 +1,6 @@
 import { CreateNotifyForNotifyMicroservice } from '@fitfriends-backend/shared-types';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
-import { rejects } from 'assert';
 
 import * as ejs from 'ejs';
 import { resolve } from 'path';

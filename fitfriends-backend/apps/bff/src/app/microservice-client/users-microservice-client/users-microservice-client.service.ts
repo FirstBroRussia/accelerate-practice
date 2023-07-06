@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { CoachCreateUserDto, StudentCreateUserDto, CoachCreateUserRdo, StudentCreateUserRdo, CustomErrorResponseType, LoginUserDto, JwtUserPayloadDto, StudentUserRdo, CoachUserRdo, UpdateStudentUserInfoDto, UpdateCoachUserInfoDto, JwtRefreshTokenDto, GetFriendsListQuery, FriendUserInfoRdo, UpdateStatusRequestTrainingDto, GetUserListDto } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, StudentCreateUserDto, CoachCreateUserRdo, StudentCreateUserRdo, CustomErrorResponseType, LoginUserDto, JwtUserPayloadDto, StudentUserRdo, CoachUserRdo, UpdateStudentUserInfoDto, UpdateCoachUserInfoDto, GetFriendsListQuery, FriendUserInfoRdo, UpdateStatusRequestTrainingDto, GetUserListDto } from '@fitfriends-backend/shared-types';
 import { BffMicroserviceEnvInterface } from 'apps/bff/src/assets/interface/bff-microservice-env.interface';
 
 

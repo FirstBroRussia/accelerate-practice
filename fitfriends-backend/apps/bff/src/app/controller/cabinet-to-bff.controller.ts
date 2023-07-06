@@ -25,7 +25,6 @@ export class CabinetToBffController {
   private readonly logger = new Logger(CabinetToBffController.name);
 
   constructor (
-    private readonly config: ConfigService<BffMicroserviceEnvInterface>,
     private readonly usersMicroserviceClient: UsersMicroserviceClientService,
     private readonly trainingsMicroserviceClient: TrainingsMicroserviceClientService,
     private readonly ordersMicroserviceClient: OrdersMicroserviceClientService,

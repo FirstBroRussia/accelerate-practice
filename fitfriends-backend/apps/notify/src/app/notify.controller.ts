@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
 
-import { BadRequestException, Controller, Get, Logger } from '@nestjs/common';
+import { BadRequestException, Controller, Logger } from '@nestjs/common';
 import { EventPattern, MessagePattern, RpcException, Transport } from '@nestjs/microservices';
 
 

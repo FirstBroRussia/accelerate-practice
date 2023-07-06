@@ -6,7 +6,6 @@ import { generateHash } from "@fitfriends-backend/core";
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
 
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface BaseUserEntity extends Document { }
 
 @Schema({

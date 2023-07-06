@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { NotifyRepositoryService } from './notify-repository/notify-repository.service';
 import { NotifyEntity } from './notify-repository/entity/notify.entity';
 import { CreateNotifyForNotifyMicroservice, GetNotifyDto, RemoveNotifyDto } from '@fitfriends-backend/shared-types';

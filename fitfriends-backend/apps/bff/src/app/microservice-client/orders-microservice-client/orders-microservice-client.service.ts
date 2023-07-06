@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 
-import { BalanceOrdersFromOrdersMicroserviceDto, CoachOrderInfoRdo, CreateOrderDto, CustomErrorResponseType, GetDocumentQuery, StudentOrderInfoRdo, UserRoleType } from '@fitfriends-backend/shared-types';
+import { BalanceOrdersFromOrdersMicroserviceDto, CoachOrderInfoRdo, CreateOrderDto, CustomErrorResponseType, GetDocumentQuery, StudentOrderInfoRdo } from '@fitfriends-backend/shared-types';
 
 import { BffMicroserviceEnvInterface } from 'apps/bff/src/assets/interface/bff-microservice-env.interface';
 

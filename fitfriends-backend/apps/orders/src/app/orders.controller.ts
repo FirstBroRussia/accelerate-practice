@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Logger, Param, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, UseInterceptors } from '@nestjs/common';
 
-import { CoachOrderInfoRdo, CreateOrderDto, GetDocumentQuery, MongoIdValidationPipe, StudentOrderInfoRdo, TransformAndValidateDtoInterceptor, UserRoleType, UserRoleValidationPipe } from '@fitfriends-backend/shared-types';
+import { CoachOrderInfoRdo, CreateOrderDto, GetDocumentQuery, MongoIdValidationPipe, StudentOrderInfoRdo, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
 import { fillRDO } from '@fitfriends-backend/core';
 
 import { OrdersService } from './orders.service';

@@ -1,7 +1,6 @@
 import { BffMicroserviceConstant, CreateNotifyForNotifyMicroservice, GetNotifyDto, NotifyFromNotifyMicroserviceRdo, NotifyMessageEnum, RemoveNotifyDto } from '@fitfriends-backend/shared-types';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { NestApplicationContext } from '@nestjs/core';
-import { EventPattern, ClientProxy, ClientRMQ } from '@nestjs/microservices';
+import { ClientRMQ } from '@nestjs/microservices';
 
 
 @Injectable()

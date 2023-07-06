@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Logger, UseInterceptors, Param } from '@nestjs/common';
 
 import { CommentService } from './comment.service';
-import { CommentFromCommentsMicroserviceRdo, CommentRdo, CommentsListFromCommentsMicroserviceRdo, CreateCommentForCommentsMicroserviceDto, GetDocumentQuery, MongoIdValidationPipe, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
+import { CommentFromCommentsMicroserviceRdo, CommentsListFromCommentsMicroserviceRdo, CreateCommentForCommentsMicroserviceDto, GetDocumentQuery, MongoIdValidationPipe, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
 import { fillRDO } from '@fitfriends-backend/core';
 
 @Controller('comments')

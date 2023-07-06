@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentEntity } from './entity/comment.entity';
-import { Model, QueryOptions } from 'mongoose';
+import { Model } from 'mongoose';
 import { CreateCommentForCommentsMicroserviceDto, DEFAULT_PAGINATION_LIMIT, GetDocumentQuery } from '@fitfriends-backend/shared-types';
 
 @Injectable()
