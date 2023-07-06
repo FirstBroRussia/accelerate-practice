@@ -42,7 +42,6 @@ type FileStreamCompletedType = {
 };
 
 
-// @Injectable()
 export class CreateUserInterceptor implements NestInterceptor {
   private readonly logger = new Logger(CreateUserInterceptor.name);
 

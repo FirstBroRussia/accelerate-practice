@@ -2,6 +2,7 @@ import { IsInt, IsString, Max, Min, validateSync } from "class-validator";
 import { BffMicroserviceEnvInterface } from "../interface/bff-microservice-env.interface";
 import { plainToInstance } from "class-transformer";
 
+
 class BffEnvValidateConfig implements BffMicroserviceEnvInterface {
   @IsString()
   HOST: string;
@@ -29,6 +30,28 @@ class BffEnvValidateConfig implements BffMicroserviceEnvInterface {
 
   @IsString()
   ORDERS_MICROSERVICE_URL: string;
+
+  @IsString()
+  COMMENTS_MICROSERVICE_URL: string;
+
+
+
+  @IsString()
+  RABBIT_USER: string;
+
+  @IsString()
+  RABBIT_PASSWORD: string;
+
+  @IsString()
+  RABBIT_HOST: string;
+
+  @IsInt()
+  @Min(0)
+  @Max(65535)
+  RABBIT_PORT: number;
+
+  @IsString()
+  RABBIT_QUEUE: string;
 
 }
 

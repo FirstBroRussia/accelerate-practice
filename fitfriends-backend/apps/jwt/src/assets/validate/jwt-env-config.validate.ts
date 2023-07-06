@@ -24,12 +24,6 @@ class JwtEnvValidateConfig implements JwtMicroserviceEnvInterface {
   REFRESH_TOKEN_EXPIRATION_TIME: string;
 
   @IsString()
-  USERS_MICROSERVICE_URL: string;
-
-  @IsString()
-  GENERATE_UNIQUE_HASH_STRING: string;
-
-  @IsString()
   MONGO_DB_HOST: string;
 
   @IsInt()
@@ -49,6 +43,7 @@ class JwtEnvValidateConfig implements JwtMicroserviceEnvInterface {
 
   @IsString()
   MONGO_DB_PASSWORD: string;
+
 
 }
 

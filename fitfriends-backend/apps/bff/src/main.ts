@@ -14,7 +14,8 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { BffModule } from './app/bff.module';
 import { ConfigService } from '@nestjs/config';
 import { BffMicroserviceEnvInterface } from './assets/interface/bff-microservice-env.interface';
-import { AllExceptionsFilter } from '@fitfriends-backend/shared-types';
+import { AllExceptionsFilter, BffMicroserviceConstant } from '@fitfriends-backend/shared-types';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(BffModule);
@@ -29,7 +30,8 @@ async function bootstrap() {
   const port = config.get('PORT') || 3000;
   const host = config.get('HOST') || '127.0.0.1';
 
-  await app.listen(port, host);
+  await Promise.all([app.startAllMicroservices(), app.listen(port, host)]);
+
   Logger.log(
     `🚀 BFF microservice is running on: http://${host}:${port}/`
   );

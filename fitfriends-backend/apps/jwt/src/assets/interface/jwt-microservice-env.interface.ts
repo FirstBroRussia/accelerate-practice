@@ -8,10 +8,6 @@ export interface JwtMicroserviceEnvInterface {
   ACCESS_TOKEN_EXPIRATION_TIME: string;
   REFRESH_TOKEN_EXPIRATION_TIME: string;
 
-  GENERATE_UNIQUE_HASH_STRING: string;
-
-  USERS_MICROSERVICE_URL: string;
-
 
   MONGO_DB_HOST: string;
   MONGO_DB_PORT: number;

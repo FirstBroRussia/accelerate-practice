@@ -9,6 +9,5 @@ export interface UsersMicroserviceEnvInterface {
   MONGO_DB_NAME: string;
   MONGO_AUTH_BASE: string;
 
-  // BFF_MICROSERVICE_URL=
 
 }

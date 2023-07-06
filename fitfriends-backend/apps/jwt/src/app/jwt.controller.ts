@@ -1,5 +1,3 @@
-import * as jose from 'jose';
-
 import { Body, Controller, Get, HttpCode, Logger, Post, UseInterceptors } from '@nestjs/common';
 
 import { JwtService } from './jwt.service';
@@ -15,7 +13,6 @@ export class JwtController {
   private readonly logger = new Logger(JwtController.name);
 
   constructor(
-    private readonly config: ConfigService<JwtMicroserviceEnvInterface>,
     private readonly jwtService: JwtService,
   ) { }
 

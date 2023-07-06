@@ -41,7 +41,6 @@ type FileStreamCompletedType = {
 };
 
 
-// @Injectable()
 export class CreateCoachTrainingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(CreateCoachTrainingInterceptor.name);
 

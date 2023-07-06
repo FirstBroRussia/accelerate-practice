@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { RpcException } from '@nestjs/microservices';
 import { AxiosError } from 'axios';
 
 
@@ -43,6 +44,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
           errorType: null,
         };
       }
+
+      httpAdapter.reply(ctx.getResponse(), responseBody, responseBody.statusCode);
+
+      return;
+    } else if (exception instanceof RpcException) {
+      console.error(exception.message);
+
+      const responseBody = {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        timestamp: new Date().toISOString(),
+        path: httpAdapter.getRequestUrl(ctx.getRequest()),
+        message: exception.message,
+        errorType: null,
+      };
+
 
       httpAdapter.reply(ctx.getResponse(), responseBody, responseBody.statusCode);
 

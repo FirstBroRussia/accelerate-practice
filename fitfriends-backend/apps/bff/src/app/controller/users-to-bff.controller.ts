@@ -2,13 +2,13 @@ import * as fs from 'fs';
 
 import { Request } from 'express';
 
-import { isEmail, isEnum, isMongoId, validate } from 'class-validator';
+import { isEnum, validate } from 'class-validator';
 
-import { BadRequestException, Body, Controller, ForbiddenException, Get, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
-import { CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, JwtRefreshTokenDto, JwtUserPayloadRdo, JwtValidationPipe, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, JwtRefreshTokenDto, JwtUserPayloadRdo, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum } from '@fitfriends-backend/shared-types';
 
 import { BffMicroserviceEnvInterface } from '../../assets/interface/bff-microservice-env.interface';
 import { JwtMicroserviceClientService } from '../microservice-client/jwt-microservice-client/jwt-microservice-client.service';
@@ -18,6 +18,7 @@ import { JwtAuthGuard } from 'apps/bff/src/assets/guard/jwt-auth.guard';
 import { CheckJwtAccessTokenInterceptor } from 'apps/bff/src/assets/interceptor/check-jwt-access-token.interceptor';
 import { UpdateUserInterceptor } from 'apps/bff/src/assets/interceptor/update-user.interceptor';
 import { join, resolve } from 'path';
+import { HttpStatusCode } from 'axios';
 
 
 @Controller('users')
@@ -30,15 +31,6 @@ export class UsersToBffController {
     private readonly jwtMicroserviceClient: JwtMicroserviceClientService,
   ) { }
 
-
-  @Post('checkemail')
-  public async checkEmail(@Body('email') email: string): Promise<boolean> {
-    if (!isEmail(email)) {
-      throw new BadRequestException(`Передан невалидный email: ${email}.`);
-    }
-
-    return await this.usersMicroserviceClient.checkEmail(email);
-  }
 
   @Post('/register')
   @UseInterceptors(new CreateUserInterceptor([
@@ -195,15 +187,15 @@ export class UsersToBffController {
   }
 
   @Post('logout')
+  @HttpCode(HttpStatusCode.NoContent)
   @UseInterceptors(new TransformAndValidateDtoInterceptor(JwtRefreshTokenDto))
   public async logout(@Body() dto: JwtRefreshTokenDto): Promise<void> {
-    return await this.jwtMicroserviceClient.logout(dto);
+    await this.jwtMicroserviceClient.logout(dto);
   }
 
   @Get('userslist')
   @UseInterceptors(new TransformAndValidateQueryInterceptor(FindUsersQuery))
   @UseGuards(JwtAuthGuard)
-  // public async getUsersList(@Query() query: FindUsersQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
     public async getUsersList(@Query() query: FindUsersQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<(StudentUserRdo | CoachUserRdo)[]> {
     const { role } = req.user;
 

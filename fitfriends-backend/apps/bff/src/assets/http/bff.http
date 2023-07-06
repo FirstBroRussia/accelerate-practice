@@ -93,3 +93,121 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDk1YTIwMDNkYTM5ZTU1ODhjZ
 
 
 ###
+
+
+
+
+
+
+// CABINET
+
+GET http://127.0.0.1:14000/cabinet/trainings/64986441a8ee67fcf77fb8aa
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDk1YTIwMDNkYTM5ZTU1ODhjZTI0YTYiLCJlbWFpbCI6ImFhYWFycnJAYmJiLmNvbSIsInJvbGUiOiJTdHVkZW50IiwiaWF0IjoxNjg3NzA5OTExLCJleHAiOjE2ODc3OTYzMTF9.S25rffPs4S-SDF-RzGjsymt_8yvCEy8nbmGXAPnXbxI
+
+
+###
+GET http://127.0.0.1:14000/cabinet/trainings?minPrice=10&maxPrice=10000&minCalories=1200&maxCalories=3000&minRating=0&maxRating=4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3NzY0Mjk3LCJleHAiOjE2ODc4NTA2OTd9.ZlrfujrB-XeGMmHfnPo-Gzci52RyOKDYredHh2IrzLw
+
+###
+
+
+
+
+GET http://127.0.0.1:14000/cabinet/friends/addfriend/649b24f08f088aeaaf5ea62e
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg2MzM4NTcsImV4cCI6MTY4ODcyMDI1N30.KJUCFZdTzAya_05kHntyH69a2dRKod6bJdAPdwyeoqE
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/addfriend/649b24f08f088aeaaf5ea62e
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODgzODQ4NTQsImV4cCI6MTY4ODQ3MTI1NH0.dR4RcpyOHBKsEPshuSV6lqjhF5VkzR4P25X4cKPjyF0
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/removefriend/649b24f08f088aeaaf5ea62e
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg2MzM4NTcsImV4cCI6MTY4ODcyMDI1N30.KJUCFZdTzAya_05kHntyH69a2dRKod6bJdAPdwyeoqE
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/list
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODgzODQ4NTQsImV4cCI6MTY4ODQ3MTI1NH0.dR4RcpyOHBKsEPshuSV6lqjhF5VkzR4P25X4cKPjyF0
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/requesttraining/create/649b254c8f088aeaaf5ea648
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjRmMDhmMDg4YWVhYWY1ZWE2MmUiLCJlbWFpbCI6ImFhYWFhQGJiYi5jb20iLCJyb2xlIjoiU3R1ZGVudCIsImlhdCI6MTY4ODQ2MzE0NywiZXhwIjoxNjg4NTQ5NTQ3fQ.55UzeRDg3W7aMGCqjZGPWkol6Nzt8S-PtuJFRiAxV2U
+
+###
+
+GET http://127.0.0.1:14000/cabinet/friends/requesttraining/updatestatus/64a3e792bc6193fd9bde9c4d
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg0Njc2ODAsImV4cCI6MTY4ODU1NDA4MH0.ommsKpiJnNM0RFhFG1bDgpfB7L7fqr9PEvE5ef6UyLc
+Content-Type: application/json
+
+{
+  "status": "Rejected"
+}
+
+###
+
+
+
+POST http://127.0.0.1:14000/cabinet/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODgxMTg5NjQsImV4cCI6MTY4ODIwNTM2NH0.D5cm3uF1I-5_HHzsgI8A8ZgB2Sih1rhCe0G6d_FbGbI
+Content-Type: application/json
+
+{
+  "purchaseType": "Subscription",
+  "productId": "649ebeeda8c3f7dd7145529b",
+  "productPrice": 1000,
+  "quantity": 2,
+  "orderAmount": 2000,
+  "paymentMethod": "Visa"
+}
+
+###
+
+GET http://127.0.0.1:14000/cabinet/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODgxMjEwMjAsImV4cCI6MTY4ODIwNzQyMH0.lBrPPm8db2ywWIP7dV_qoK9A2mA18uUaFVWSnW0QCT8
+
+###
+
+GET http://127.0.0.1:14000/cabinet/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU1MThmMDg4YWVhYWY1ZWE2NGMiLCJlbWFpbCI6ImFhYWFycnJAYmJiLmNvbSIsInJvbGUiOiJDb2FjaCIsImlhdCI6MTY4ODEyNDkwMCwiZXhwIjoxNjg4MjExMzAwfQ.DZ33YcWQe8gI8v0oYRjiN2PPnOg45wJzpe7ACQBDYKg
+
+###
+
+GET http://127.0.0.1:14000/cabinet/balance
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg0Njk0OTAsImV4cCI6MTY4ODU1NTg5MH0.dmsytFCmzXSyEGViJdBlhhxh-C6Jk_bmAjhry35M0AI
+
+###
+
+POST http://localhost:14000/cabinet/comments
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg2MzQxMjQsImV4cCI6MTY4ODcyMDUyNH0.QGhh5saT_HCCqfgIedQjoyP8LsRdJ_EcqSBurkWwiS0
+Content-Type: application/json
+
+{
+  "orderId": "649ebf0ac2e3a6112fabc75a",
+  "score": 4,
+  "description": "AAAAAAAAAAAAAAAASSSSSADADADADADADADADADADADADDDDDDDDDDDDDDsdsadsasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasaSSSSSSSSSSdddddddddddddddddddddFFFFFFFFFFFFFFFcccccccccccccccdsasasasasasasasasasasasasasasasasaSDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcccccccSSSSSSSSSSSSSSSSffffffffffffffffRRRRRRRRRRRRRRRRVVVVVVVVVVVVVVVvfsdfsdfsdfwefdsfdsfsdfsdfdsfsdfsdfsdfsdf"
+}
+
+###
+
+GET  http://localhost:14000/cabinet/comments/649ebee8a8c3f7dd71455299
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg0Njk0OTAsImV4cCI6MTY4ODU1NTg5MH0.dmsytFCmzXSyEGViJdBlhhxh-C6Jk_bmAjhry35M0AI
+
+###
+
+
+
+
+
+GET http://localhost:14000/cabinet/notify
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg2MzQxMjQsImV4cCI6MTY4ODcyMDUyNH0.QGhh5saT_HCCqfgIedQjoyP8LsRdJ_EcqSBurkWwiS0
+
+###
+
+DELETE http://localhost:14000/cabinet/notify/64a6a94216dad8f00e3dd773
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg2MzQxMjQsImV4cCI6MTY4ODcyMDUyNH0.QGhh5saT_HCCqfgIedQjoyP8LsRdJ_EcqSBurkWwiS0
+
+###

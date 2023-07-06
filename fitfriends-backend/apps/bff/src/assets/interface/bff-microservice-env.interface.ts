@@ -9,13 +9,13 @@ export interface BffMicroserviceEnvInterface {
   JWT_MICROSERVICE_URL: string;
   TRAININGS_MICROSERVICE_URL: string;
   ORDERS_MICROSERVICE_URL: string;
+  COMMENTS_MICROSERVICE_URL: string;
 
-  // MONGO_DB_HOST: string;
-  // MONGO_DB_PORT: number;
-  // MONGO_DB_USERNAME: string;
-  // MONGO_DB_PASSWORD: string;
-  // MONGO_DB_NAME: string;
-  // MONGO_AUTH_BASE: string;
+  RABBIT_USER: string;
+  RABBIT_PASSWORD: string;
+  RABBIT_HOST: string;
+  RABBIT_PORT: number;
+  RABBIT_QUEUE: string;
 
 
 }

@@ -45,19 +45,19 @@ export class TrainingsService {
     return result;
   }
 
-  public async getTrainingListByCreatorId(creatorUserId: string, query: FindCoachTrainingsQuery): Promise<CoachTrainingEntity[]> {
-    return await this.trainingsRepository.getTrainingListByCreatorId(creatorUserId, query);
+  public async getTrainingListByTrainingIds(ids: string[]): Promise<CoachTrainingEntity[]> {
+    return await this.trainingsRepository.getTrainingListByTrainingIds(ids);
   }
 
-  public async updateRatingById(trainingId: string, creatorUserId: string, dto: UpdateRatingCoachTrainingDto): Promise<CoachTrainingEntity> {
+  public async getTrainingListByCreatorId(creatorUserId: string, query: FindCoachTrainingsQuery): Promise<CoachTrainingEntity[]> {
+    return await this.trainingsRepository.getTrainingListByCreatorUserId(creatorUserId, query);
+  }
+
+  public async updateRatingById(trainingId: string, dto: UpdateRatingCoachTrainingDto): Promise<CoachTrainingEntity> {
     const result = await this.trainingsRepository.getById(trainingId);
 
     if (!result) {
       throw new BadRequestException(`Тренировки с данным ID: ${trainingId} не найдено.`);
-    }
-
-    if (result.coachCreator !== creatorUserId) {
-      throw new ForbiddenException('Доступ запрещен, вы не имеете права совершать данное действие.');
     }
 
     const { score } = dto;
