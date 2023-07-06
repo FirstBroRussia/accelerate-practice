@@ -193,7 +193,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:14000/cabinet/comments/649ebee8a8c3f7dd71455299
+GET  http://localhost:14000/cabinet/comments/649ebee8a8c3f7dd71455299
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg0Njk0OTAsImV4cCI6MTY4ODU1NTg5MH0.dmsytFCmzXSyEGViJdBlhhxh-C6Jk_bmAjhry35M0AI
 
 ###
@@ -203,6 +203,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1Z
 
 
 GET http://localhost:14000/cabinet/notify
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg2MzQxMjQsImV4cCI6MTY4ODcyMDUyNH0.QGhh5saT_HCCqfgIedQjoyP8LsRdJ_EcqSBurkWwiS0
+
+###
+
+DELETE http://localhost:14000/cabinet/notify/64a6a94216dad8f00e3dd773
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU0YzhmMDg4YWVhYWY1ZWE2NDgiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IlN0dWRlbnQiLCJpYXQiOjE2ODg2MzQxMjQsImV4cCI6MTY4ODcyMDUyNH0.QGhh5saT_HCCqfgIedQjoyP8LsRdJ_EcqSBurkWwiS0
 
 ###

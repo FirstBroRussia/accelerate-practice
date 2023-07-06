@@ -16,7 +16,8 @@
         "tsConfig": "apps/comments/tsconfig.app.json",
         "assets": ["apps/comments/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/comments/webpack.config.js"
+        "webpackConfig": "apps/comments/webpack.config.js",
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},

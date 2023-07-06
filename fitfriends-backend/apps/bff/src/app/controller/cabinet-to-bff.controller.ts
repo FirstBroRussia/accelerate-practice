@@ -364,7 +364,7 @@ export class CabinetToBffController {
     return fillRDO(CommentRdo, transformResult);
   }
 
-  @Post('comments/:trainingId')
+  @Get('comments/:trainingId')
   @UseInterceptors(new TransformAndValidateQueryInterceptor(GetDocumentQuery))
   @UseGuards(JwtAuthGuard)
   public async findComments(@Param('trainingId', MongoIdValidationPipe) trainingId: string, @Query() query: GetDocumentQuery): Promise<CommentRdo[]> {

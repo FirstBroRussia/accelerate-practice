@@ -582,90 +582,21 @@ paths:
       tags:
         - "comments"
       summary: Создание комментария к тренировке
-      description: Сервис предоставляет возможность Создание комментария к тренировке. Ресурс доступен только клиентам с ролью "Пользователь".
+      description: Сервис предоставляет возможность создания комментария к тренировке. Ресурс доступен только авторизованным клиентам .
       requestBody:
         description: Объект с комментарием
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateOrder'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    post:
-      tags:
-        - "products"
-      summary: Добавить новый товар.
-      description: Сервис предоставляет возможность добавить новый товар. Ресурс доступен только администратору.
-      operationId: createProduct
-      requestBody:
-        description: Объект с новым фильмом
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProduct'
+              $ref: '#/components/schemas/CreateComment'
       responses:
-        '201':
-          description: Новый товар
+        "200":
+          description: Объект с комментарием
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateProduct'
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-
-  /products[:productId]:
-    get:
-      tags:
-        - "products"
-      summary: Получение списка товаров
-      description: Сервис предоставляет возможность получить товар по ID.
-      operationId: getProductById
-      parameters:
-        - name: productId
-          in: path
-          description: Id товара
-          required: true
-          schema:
-            type: string
-            example: UUID
-      responses:
-        '200':
-          description: Объект
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductCardInfo'
+                $ref: '#/components/schemas/Comment'
         "400":
           description: Ошибка тела запроса
           content:
@@ -673,269 +604,74 @@ paths:
               schema:
                 $ref: '#/components/schemas/ObjectRequestBodyError'
 
-    put:
-      tags:
-        - "products"
-      summary: Обновить данные о товаре.
-      description: Сервис предоставляет возможность обновить данные о товаре. Ресурс доступен только администратору.
-      operationId: updateProductById
-      parameters:
-        - name: productId
-          in: path
-          description: Id товара
-          required: true
-          schema:
-            type: string
-            example: UUID
-      requestBody:
-        description: Объект с новым фильмом
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProduct'
-      responses:
-        '201':
-          description: Новый товар
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateProduct'
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-    delete:
-      tags:
-        - "products"
-      summary: Удалить товар.
-      description: Сервис предоставляет возможность удалить товаре. Ресурс доступен только администратору.
-      operationId: updateProductById
-      parameters:
-        - name: productId
-          in: path
-          description: Id товара
-          required: true
-          schema:
-            type: string
-            example: UUID
-      responses:
-        '201':
-          description: OK
-          content: {}
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-
-  /orders:
+  /cabinet/comments/{trainingId}:
     get:
       tags:
-        - "orders"
-      summary: Получение списка заказов
-      description: Сервис предоставляет возможность получить список фильмов не более чем из 9 штук. Передается пагинационное число. Есть возможность сортировки п овозрастанию и убыванию по полям цены и даты. Смотерть заказы может только администратор.
+        - "comments"
+      summary: Получение списка комментариев по {trainingId}
+      description: Сервис предоставляет возможность получения списка комментариев к тренировке. Ресурс доступен только авторизованным клиентам .
       parameters:
-        - name: sort
-          in: query
-          description: Вид сортировки
-          required: true
+        - in: query
+          name: page
+          required: false
           schema:
-            $ref: '#/components/schemas/Sort'
-            example: Rating_desc
-        - name: page
-          in: query
-          description: Пагинационное число
-          required: true
-          schema:
-            type: string
+            type: number
             example: 1
-      operationId: getOrders
-      responses:
-        '200':
-          description: Массив с объектами заказов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Order'
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-    post:
-      tags:
-        - "orders"
-      summary: Создание заказа
-      description: Сервис предоставляет возможность создать заказ. Заказ могут создать только авторизованные пользователи.
-      requestBody:
-        description: Объект с новым заказом
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateOrder'
-      operationId: createOrder
-      responses:
-        '201':
-          description: Новый заказ
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Order'
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-  /orders[:orderId]:
-    get:
-      tags:
-        - "orders"
-      summary: Получение данных о заказе по ID
-      description: Сервис предоставляет возможность получение данных о заказе. Заказ может просмотреть только администратор.
-      parameters:
-        - name: orderId
-          in: path
-          description: ID заказа
-          required: true
+        - in: query
+          name: sort
+          required: false
           schema:
-            type: string
-            example: MongoID
-      operationId: getOrderByID
+            $ref: '#/components/schemas/SortEnum'
       responses:
-        '200':
-          description: Объект заказа
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Order'
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-    delete:
-      tags:
-        - "orders"
-      summary: Удаление заказа по ID
-      description: Сервис предоставляет возможность удаление заказа по ID. Удалить заказ может только администратор.
-      parameters:
-        - name: orderId
-          in: path
-          description: ID заказа
-          required: true
-          schema:
-            type: string
-            example: MongoID
-      operationId: getOrderByID
-      responses:
-        '200':
-          description: OK
-          content: {}
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-
-  /comments:
-    post:
-      tags:
-        - "comments"
-      summary: Создание нового комментария
-      description: Сервис предоставляет возможность создать новый комментарий к товару. Оставить комментарий может только авторизованный пользователь.
-      requestBody:
-        description: Объект с новым комментарием
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateComment'
-      operationId: createComment
-      responses:
-        '201':
-          description: Новый объект c комментарием
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Comment'
-        '400':
-          description: Ошибка тела запроса
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
-
-  /comments[:productId]:
-    get:
-      tags:
-        - "comments"
-      summary: Получение списка комментариев по ID товара
-      description: Сервис предоставляет возможность получения списка комментариев по ID товара. Получить комментарии могут любые пользователи.
-      parameters:
-        - name: productId
-          in: path
-          description: ID товара
-          required: true
-          schema:
-            type: string
-            example: UUID
-      operationId: getCommentsById
-      responses:
-        '200':
-          description: Объект заказа
+        "200":
+          description: Массив с комментариями
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Comment'
-        '400':
-          description: Ошибка тела запроса
+        '409':
+            description: Тренировки с таким {trainingId} не существует
+            content: {}
+
+
+  /cabinet/notify:
+    get:
+      tags:
+        - "notify"
+      summary: Получение последних пяти оповещений
+      description: Сервис предоставляет возможность получения последних пяти оповещений. Ресурс доступен только авторизованным клиентам .
+      responses:
+        "200":
+          description: Массив с комментариями
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObjectRequestBodyError'
-        '401':
-          description: Необходима авторизация для данного действия
-          content: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notify'
+
+  /cabinet/notify/{notifyId}:
+    delete:
+      tags:
+        - "notify"
+      summary: Удаление оповещения по {notifyId}
+      description: Сервис предоставляет возможность удаления оповещения. Ресурс доступен только авторизованным клиентам .
+      parameters:
+        - in: path
+          name: notifyId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      responses:
+        '200':
+            description: Пустой ответ
+            content: {}
+        '409':
+            description: Оповещения с таким {notifyId} не существует
+            content: {}
 
 
 components:
@@ -1014,6 +750,13 @@ components:
         - Mir
         - Umoney
 
+    NotifyMessageEnum:
+      type: string
+      enum:
+        - AddFriend
+        - RequestTrainingToStudentUser
+        - RequestCoachTraining
+
 
     Rating:
       type: string
@@ -1024,27 +767,6 @@ components:
       type: string
       example: 2021-12-12T21:55:28.147Z
 
-    JwtPayload:
-      type: object
-      properties:
-        id:
-          type: string
-          example: MongoID
-        email:
-          type: string
-          example: aaa@bbb.com
-        username:
-          type: string
-          example: Vasya
-        isAdmin:
-          type: boolean
-          example: false
-        exp:
-          type: number
-          example: 1234567890
-        iat:
-          type: number
-          example: 1234567890
 
 
     CreateStudentUser:
@@ -1529,118 +1251,18 @@ components:
           type: number
           example: 4
 
-
-
-
-
-
-
-
-
-    ProductCardInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          example: UUID
-        title:
-          type: string
-          example: Мощная гитара
-        description:
-          type: string
-          example: Описание гитары
-        guitarType:
-          $ref: '#/components/schemas/GuitarType'
-          example: Electro
-        guitarStringsCount:
-          $ref: '#/components/schemas/GuitarStringsCount'
-        article:
-          type: string
-          example: dasd1fad5sadsa
-        rating:
-          type: number
-          example: 4
-        price:
-          type: number
-          example: 20000
-        imageLink:
-          type: string
-          example: /api/products/upload/dasdfsdfsd.jpeg
-        commentsCount:
-          type: number
-          example: 24
-        createdAt:
-          $ref: '#/components/schemas/Date'
-          example: 2021-12-12T21:55:28.147Z
-
-    CreateOrder:
-      type: object
-      properties:
-        products:
-          type: array
-          items:
-            type: string
-            example: UUID product
-        totalCount:
-          type: number
-          example: 5
-        totalPrice:
-          type: number
-          example: 100000
-
-    OrderProduct:
-      type: object
-      properties:
-        product:
-          $ref: '#/components/schemas/ProductCardInfo'
-        price:
-          type: number
-          example: 20000
-        count:
-          type: number
-          example: 5
-        totalPrice:
-          type: number
-          example: 100000
-
-    Order:
-      type: object
-      properties:
-        id:
-          type: string
-          example: MongoID
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderProduct'
-        totalCount:
-          type: number
-          example: 5
-        totalPrice:
-          type: number
-          example: 100000
-        createdAt:
-          $ref: '#/components/schemas/Date'
-
-
-
     CreateComment:
       type: object
       properties:
-        productId:
+        orderId:
           type: string
-          example: UUID
-        advantages:
-          type: string
-          example: Хорошая гитара
-        disadvantages:
-          type: string
-          example: Плохая гитара
-        comment:
-          type: string
-          example: Отзыв о гитаре
+          example: MongoID
         score:
-          $ref: "#/components/schemas/Rating"
+          type: number
+          example: 4
+        description:
+          type: string
+          example: Хороший комментарий.
 
     Comment:
       type: object
@@ -1648,48 +1270,33 @@ components:
         id:
           type: string
           example: MongoID
-        username:
+        userInfo:
+          $ref: '#/components/schemas/StudentUserInfo'
+        trainingId:
           type: string
-          example: John Doe
-        productId:
-          type: string
-          example: UUID
-        advantages:
-          type: string
-          example: Хорошая гитара
-        disadvantages:
-          type: string
-          example: Плохая гитара
-        comment:
-          type: string
-          example: Отзыв о гитаре
+          example: MongoID
         score:
-          $ref: "#/components/schemas/Rating"
+          type: number
+          example: 4
+        description:
+          type: string
+          example: Хороший комментарий.
         createdAt:
           $ref: '#/components/schemas/Date'
 
-
-
-    User:
+    Notify:
       type: object
       properties:
         id:
           type: string
           example: MongoID
-        email:
-          type: string
-          example: John.doe@gmail.com
-        username:
-          type: string
-          example: John Doe
-        isAdmin:
-          type: boolean
-          example: false
+        message:
+          $ref: '#/components/schemas/NotifyMessageEnum'
+        userInfo:
+          $ref: '#/components/schemas/StudentUserInfo'
+        createdAt:
+          $ref: '#/components/schemas/Date'
 
-
-    FilmId:
-      type: string
-      example: 507f1f77bcf86cd799439011
 
     ObjectRequestBodyError:
       type: string
