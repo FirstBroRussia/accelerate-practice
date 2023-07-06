@@ -1,0 +1,1696 @@
+openapi: '3.0.1'
+
+info:
+  title: REST API сервер для практического проекта "FitFriends".
+  description: |-
+    * Списoк ресурсов и маршрутов сервера "FitFriends".
+  version: '1.0'
+
+tags:
+  - name: users
+    description: Действия с пользователями.
+  - name: jwt
+    description: Действия с JWT.
+  - name: trainings
+    description: Действия с тренировками.
+  - name: orders
+    description: Действия с заказами.
+  - name: comments
+    description: Действия с комментариями.
+  - name: notify
+    description: Действия с оповещениями.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - "users"
+      summary: Создание нового пользователя
+      description: Сервис предоставляет возможность создать нового пользователя. Новому пользователю соответствует уникальный email. Ресурс доступен только анонимным пользователям.
+      operationId: createNewUser
+      requestBody:
+        description: Объект с данными о новом пользователе
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+      responses:
+        '201':
+          description: Объект с данными о созданном пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '409':
+          description: Пользователь с таким email существует
+          content: {}
+
+  /users/login:
+    post:
+      tags:
+        - "users"
+      summary: Авторизация на сервисе
+      description: Сервис предоставляет возможность для авторизации пользователя.
+      operationId: loginUser
+      requestBody:
+        description: Объект с данными для авторизации
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        "200":
+          description: Статус авторизации
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoggedUser"
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        "401":
+          description: Неверный логин или пароль
+          content: {}
+
+  /users/{userId}:
+    get:
+      tags:
+        - "users"
+      summary: Получение информации пользователя по {userId}
+      description: Сервис предоставляет возможность для получения информации о пользователе. Ресурс доступен только авторизованным клиентам.
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      responses:
+        "200":
+          description: Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '409':
+          description: Пользователь с таким {userId} не существует
+          content: {}
+
+    patch:
+      tags:
+        - "users"
+      summary: Обновление информации пользователя по {userId}
+      description: Сервис предоставляет возможность для обновдения информации о пользователе. Ресурс доступен только авторизованным клиентам.
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      requestBody:
+        description: Объект с данными для пользователя
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserInfo'
+      responses:
+          "200":
+            description: Объект пользователя
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/UserInfo"
+          "400":
+            description: Ошибка тела запроса
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ObjectRequestBodyError'
+          '409':
+            description: Пользователь с таким {userId} не существует
+            content: {}
+
+  /users/userslist/:
+    get:
+      tags:
+        - "users"
+      summary: Получения списка пользователей
+      description: Сервис предоставляет возможность для получения списка пользователей. Ресурс доступен только клиентам со статусом "Пользователь".
+      parameters:
+        - in: query
+          name: role
+          required: true
+          schema:
+            $ref: '#/components/schemas/RoleEnum'
+        - in: query
+          name: location
+          required: false
+          schema:
+            $ref: '#/components/schemas/LocationEnum'
+        - in: query
+          name: trainingType
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/TrainingTypeEnum'
+        - in: query
+          name: skillLevel
+          required: false
+          schema:
+            $ref: '#/components/schemas/SkillLevelEnum'
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: number
+            example: 1
+        - in: query
+          name: sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortEnum'
+      responses:
+          "200":
+            description: Объект пользователя
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/UserInfo"
+          "400":
+            description: Ошибка тела запроса
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ObjectRequestBodyError'
+
+  /users/logout:
+    post:
+      tags:
+        - "users"
+      summary: Выход из закрытой части приложения
+      description: Сервис предоставляет возможность для завершения пользовательского сеанса. Ресурс доступен только авторизованным клиентам.
+      operationId: logoutUser
+      requestBody:
+        description: Авторизационный токен
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  $ref: "#/components/schemas/Token"
+      responses:
+        "204":
+          description: Сеанс завершен
+          content: {}
+        "401":
+          description: Пользователь не авторизован
+          content: {}
+
+
+
+
+  /cabinet/trainings/:
+    post:
+      tags:
+        - "trainings"
+      summary: Cоздаем новую тренировку
+      description: Сервис предоставляет возможность для создания новой тренировки. Ресурс доступен только клиентам с ролью "Тренер".
+      requestBody:
+        description: Объект с новой тренировкой
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTraining'
+      responses:
+        "200":
+            description: Объект тренировки
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/CoachTrainingInfo"
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+    get:
+      summary: Получаем список тренировок
+      description: Сервис предоставляет возможность для получения списка тренировок. Ресурс доступен только клиентам с ролью "Тренер".
+      parameters:
+        - in: query
+          name: minPrice
+          required: true
+          schema:
+            type: number
+            example: 1000
+        - in: query
+          name: maxPrice
+          required: true
+          schema:
+            type: number
+            example: 5000
+        - in: query
+          name: minCalories
+          required: true
+          schema:
+            type: number
+            example: 1000
+        - in: query
+          name: maxCalories
+          required: true
+          schema:
+            type: number
+            example: 5000
+        - in: query
+          name: minRating
+          required: true
+          schema:
+            type: number
+            example: 1
+        - in: query
+          name: maxRating
+          required: true
+          schema:
+            type: number
+            example: 5
+        - in: query
+          name: duration
+          required: false
+          schema:
+            $ref: '#/components/schemas/TrainingDurationEnum'
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: number
+            example: 1
+        - in: query
+          name: sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortEnum'
+      responses:
+        "200":
+            description: Массив с тренировками
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/CoachTrainingInfo"
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+
+  /cabinet/trainings/{trainingId}:
+    get:
+      tags:
+        - "trainings"
+      summary: Получаем информацию о тренировке по {trainingId}
+      description: Сервис предоставляет возможность для получения информации о тренировке. Ресурс доступен только авторизованным клиентам.
+      parameters:
+        - in: path
+          name: trainingId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      responses:
+        "200":
+            description: Объект тренировки
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/CoachTrainingInfo"
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '409':
+            description: Тренировка с таким {trainingId} не существует
+            content: {}
+    patch:
+      tags:
+        - "trainings"
+      summary: Получаем информацию о тренировке по {trainingId}
+      description: Сервис предоставляет возможность для получения информации о тренировке. Ресурс доступен только авторизованным клиентам.
+      parameters:
+        - in: path
+          name: trainingId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      requestBody:
+        description: Объект с тренировкой
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTraining'
+      responses:
+        "200":
+            description: Объект тренировки
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/CoachTrainingInfo"
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '409':
+            description: Тренировка с таким {trainingId} не существует
+            content: {}
+
+
+
+  /cabinet/friends/addfriend/{friendUserId}:
+    get:
+      tags:
+        - "users"
+      summary: Добавление пользователя в друзья
+      description: Сервис предоставляет возможность добавить пользователя в друзья. Ресурс доступен клиентам с ролью "Пользователь".
+      operationId: addFriend
+      parameters:
+        - in: path
+          name: friendUserId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      responses:
+        '200':
+          description: Пустой ответ
+          content: {}
+        '409':
+            description: Пользователя с таким {friendUserId} не существует
+            content: {}
+  /cabinet/friends/removefriend/{friendUserId}:
+    get:
+      tags:
+        - "users"
+      summary: Удаление пользователя из друзей
+      description: Сервис предоставляет возможность удалить пользователя из друзей. Ресурс доступен только авторизованным пользователям.
+      operationId: addFriend
+      parameters:
+        - in: path
+          name: friendUserId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      responses:
+        '200':
+          description: Пустой ответ
+          content: {}
+        '409':
+            description: Пользователя с таким {friendUserId} не существует
+            content: {}
+  /cabinet/friends/list:
+    get:
+      tags:
+        - "users"
+      summary: Получение списка друзей
+      description: Сервис предоставляет возможность получить список друзей. Ресурс доступен только авторизованным пользователям.
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: number
+            example: 1
+        - in: query
+          name: sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortEnum'
+      responses:
+        '200':
+          description: Массив с объектами пользователей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FriendUserInfo'
+  /cabinet/friends/requesttraining/create/{targetUserId}:
+    get:
+      tags:
+        - "trainings"
+      summary: Создание заявки на совместную/персональную тренировку
+      description: Сервис предоставляет возможность создание заявки на совместную/персональную тренировку. Ресурс доступен только клиентам с ролью "Пользователь".
+      parameters:
+        - in: path
+          name: targetUserId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      responses:
+        '200':
+          description: Пустой ответ
+          content: {}
+        '409':
+            description: Пользователя с таким {friendUserId} не существует
+            content: {}
+  /cabinet/friends/requesttraining/updatestatus/{requestId}:
+    get:
+      tags:
+        - "trainings"
+      summary: Обновление статуса заявки на совместную/персональную тренировку
+      description: Сервис предоставляет возможность обновить статус заявки на совместную/персональную тренировку. Ресурс доступен только авторизованным клиентам.
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      responses:
+        '200':
+          description: Пустой ответ
+          content: {}
+        '409':
+            description: Запроса с таким {requestId} не существует
+            content: {}
+
+
+
+  /cabinet/orders/:
+    post:
+      tags:
+        - "orders"
+      summary: Создание покупки тренировки
+      description: Сервис предоставляет возможность создание покупки тренировки. Ресурс доступен только клиентам с ролью "Пользователь".
+      requestBody:
+        description: Объект с покупкой тренировки
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+      responses:
+        "200":
+          description: Пустой ответ
+          content: {}
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+    get:
+      tags:
+        - "orders"
+      summary: Получение списка покупок
+      description: Сервис предоставляет возможность получения списка покупок. Ресурс доступен только авторизованным клиентам.
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: number
+            example: 1
+        - in: query
+          name: sort
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortEnum'
+      responses:
+        "200":
+          description: Массив с объектами ордеров
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderInfo'
+
+
+  /cabinet/balance:
+    get:
+      tags:
+        - "orders"
+      summary: Получение баланса пользователя
+      description: Сервис предоставляет возможность получения баланса пользователя. Ресурс доступен только клиентам с ролью "Пользователь".
+      responses:
+        "200":
+          description: Массив с объектами баланса тренировок
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BalanceInfo'
+
+  /cabinet/comments:
+    post:
+      tags:
+        - "comments"
+      summary: Создание комментария к тренировке
+      description: Сервис предоставляет возможность Создание комментария к тренировке. Ресурс доступен только клиентам с ролью "Пользователь".
+      requestBody:
+        description: Объект с комментарием
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    post:
+      tags:
+        - "products"
+      summary: Добавить новый товар.
+      description: Сервис предоставляет возможность добавить новый товар. Ресурс доступен только администратору.
+      operationId: createProduct
+      requestBody:
+        description: Объект с новым фильмом
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        '201':
+          description: Новый товар
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProduct'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+
+  /products[:productId]:
+    get:
+      tags:
+        - "products"
+      summary: Получение списка товаров
+      description: Сервис предоставляет возможность получить товар по ID.
+      operationId: getProductById
+      parameters:
+        - name: productId
+          in: path
+          description: Id товара
+          required: true
+          schema:
+            type: string
+            example: UUID
+      responses:
+        '200':
+          description: Объект
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCardInfo'
+        "400":
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+
+    put:
+      tags:
+        - "products"
+      summary: Обновить данные о товаре.
+      description: Сервис предоставляет возможность обновить данные о товаре. Ресурс доступен только администратору.
+      operationId: updateProductById
+      parameters:
+        - name: productId
+          in: path
+          description: Id товара
+          required: true
+          schema:
+            type: string
+            example: UUID
+      requestBody:
+        description: Объект с новым фильмом
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        '201':
+          description: Новый товар
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProduct'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+    delete:
+      tags:
+        - "products"
+      summary: Удалить товар.
+      description: Сервис предоставляет возможность удалить товаре. Ресурс доступен только администратору.
+      operationId: updateProductById
+      parameters:
+        - name: productId
+          in: path
+          description: Id товара
+          required: true
+          schema:
+            type: string
+            example: UUID
+      responses:
+        '201':
+          description: OK
+          content: {}
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+
+  /orders:
+    get:
+      tags:
+        - "orders"
+      summary: Получение списка заказов
+      description: Сервис предоставляет возможность получить список фильмов не более чем из 9 штук. Передается пагинационное число. Есть возможность сортировки п овозрастанию и убыванию по полям цены и даты. Смотерть заказы может только администратор.
+      parameters:
+        - name: sort
+          in: query
+          description: Вид сортировки
+          required: true
+          schema:
+            $ref: '#/components/schemas/Sort'
+            example: Rating_desc
+        - name: page
+          in: query
+          description: Пагинационное число
+          required: true
+          schema:
+            type: string
+            example: 1
+      operationId: getOrders
+      responses:
+        '200':
+          description: Массив с объектами заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+    post:
+      tags:
+        - "orders"
+      summary: Создание заказа
+      description: Сервис предоставляет возможность создать заказ. Заказ могут создать только авторизованные пользователи.
+      requestBody:
+        description: Объект с новым заказом
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+      operationId: createOrder
+      responses:
+        '201':
+          description: Новый заказ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+  /orders[:orderId]:
+    get:
+      tags:
+        - "orders"
+      summary: Получение данных о заказе по ID
+      description: Сервис предоставляет возможность получение данных о заказе. Заказ может просмотреть только администратор.
+      parameters:
+        - name: orderId
+          in: path
+          description: ID заказа
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      operationId: getOrderByID
+      responses:
+        '200':
+          description: Объект заказа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+    delete:
+      tags:
+        - "orders"
+      summary: Удаление заказа по ID
+      description: Сервис предоставляет возможность удаление заказа по ID. Удалить заказ может только администратор.
+      parameters:
+        - name: orderId
+          in: path
+          description: ID заказа
+          required: true
+          schema:
+            type: string
+            example: MongoID
+      operationId: getOrderByID
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+
+  /comments:
+    post:
+      tags:
+        - "comments"
+      summary: Создание нового комментария
+      description: Сервис предоставляет возможность создать новый комментарий к товару. Оставить комментарий может только авторизованный пользователь.
+      requestBody:
+        description: Объект с новым комментарием
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      operationId: createComment
+      responses:
+        '201':
+          description: Новый объект c комментарием
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+  /comments[:productId]:
+    get:
+      tags:
+        - "comments"
+      summary: Получение списка комментариев по ID товара
+      description: Сервис предоставляет возможность получения списка комментариев по ID товара. Получить комментарии могут любые пользователи.
+      parameters:
+        - name: productId
+          in: path
+          description: ID товара
+          required: true
+          schema:
+            type: string
+            example: UUID
+      operationId: getCommentsById
+      responses:
+        '200':
+          description: Объект заказа
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '400':
+          description: Ошибка тела запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectRequestBodyError'
+        '401':
+          description: Необходима авторизация для данного действия
+          content: {}
+
+
+components:
+  schemas:
+
+    SortEnum:
+      type: string
+      enum:
+        - desc
+        - asc
+
+    Token:
+      type: string
+      example: d61sa55555555555555555555555555555555d1sa51d6sa51d6as5d1sa1f651sad61g65sd15sa=
+
+    GenderEnum:
+      type: string
+      enum:
+        - Man
+        - Woman
+        - Any
+
+    RoleEnum:
+      type: string
+      enum:
+        - Student
+        - Coach
+
+    LocationEnum:
+      type: string
+      enum:
+        - Pionerskaya
+        - Petrogradskaya
+        - Udelnaya
+        - Zvezdaya
+        - Sportivnaya
+
+    SkillLevelEnum:
+      type: string
+      enum:
+        - Beginner
+        - Amateur
+        - Professional
+
+    TrainingTypeEnum:
+      type: string
+      enum:
+        - Yoga
+        - Running
+        - Box
+        - Stretching
+        - Crossfit
+        - Aerobics
+        - Pilates
+
+    TimeForTrainingEnum:
+      type: string
+      enum:
+        - ThirtyMin
+        - FiftyMin
+        - EightyMin
+        - OneHundredMin
+
+    TrainingDurationEnum:
+      type: string
+      enum:
+        - TenToThirtyMin
+        - ThirtyToFiftyMin
+        - FiftyToEightyMin
+        - EightyToHundredMin
+
+    PaymentMethodEnum:
+      type: string
+      enum:
+        - Visa
+        - Mir
+        - Umoney
+
+
+    Rating:
+      type: string
+      format: integer
+      example: 4
+
+    Date:
+      type: string
+      example: 2021-12-12T21:55:28.147Z
+
+    JwtPayload:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        email:
+          type: string
+          example: aaa@bbb.com
+        username:
+          type: string
+          example: Vasya
+        isAdmin:
+          type: boolean
+          example: false
+        exp:
+          type: number
+          example: 1234567890
+        iat:
+          type: number
+          example: 1234567890
+
+
+    CreateStudentUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: John.doe@gmail.com
+        name:
+          type: string
+          example: John Doe
+        password:
+          type: string
+          example: 11Gfsdfsd55sf5d
+        avatar:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        dateOfBirth:
+          $ref: '#/components/schemas/Date'
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        description:
+          type: string
+          example: Нормальный человек
+        location:
+          $ref: '#/components/schemas/LocationEnum'
+        imageForSite:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        timeForTraining:
+          $ref: '#/components/schemas/TimeForTrainingEnum'
+        allCaloriesToReset:
+          type: number
+          example: 3000
+        caloriesToResetInDay:
+          type: number
+          example: 3000
+        trainingIsReady:
+          type: boolean
+          example: true
+
+
+    CreateCoachUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: John.doe@gmail.com
+        name:
+          type: string
+          example: John Doe
+        password:
+          type: string
+          example: 11Gfsdfsd55sf5d
+        avatar:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        dateOfBirth:
+          $ref: '#/components/schemas/Date'
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        description:
+          type: string
+          example: Нормальный человек
+        location:
+          $ref: '#/components/schemas/LocationEnum'
+        imageForSite:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        certificates:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.pdf
+        awardsToCoach:
+          type: string
+          example: Серьехный тренер добивающийся своих целей.
+        personalTraining:
+          type: boolean
+          example: true
+
+    CreateUser:
+      oneOf:
+        - $ref: '#/components/schemas/CreateStudentUser'
+        - $ref: '#/components/schemas/CreateCoachUser'
+
+
+    StudentUserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        email:
+          type: string
+          example: John.doe@gmail.com
+        name:
+          type: string
+          example: John Doe
+        avatar:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        dateOfBirth:
+          $ref: '#/components/schemas/Date'
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        description:
+          type: string
+          example: Нормальный человек
+        location:
+          $ref: '#/components/schemas/LocationEnum'
+        imageForSite:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        timeForTraining:
+          $ref: '#/components/schemas/TimeForTrainingEnum'
+        allCaloriesToReset:
+          type: number
+          example: 3000
+        caloriesToResetInDay:
+          type: number
+          example: 3000
+        trainingIsReady:
+          type: boolean
+          example: true
+
+    CoachUserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        email:
+          type: string
+          example: John.doe@gmail.com
+        name:
+          type: string
+          example: John Doe
+        avatar:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        dateOfBirth:
+          $ref: '#/components/schemas/Date'
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        description:
+          type: string
+          example: Нормальный человек
+        location:
+          $ref: '#/components/schemas/LocationEnum'
+        imageForSite:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        certificates:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.pdf
+        awardsToCoach:
+          type: string
+          example: Серьехный тренер добивающийся своих целей.
+        personalTraining:
+          type: boolean
+          example: true
+
+    UserInfo:
+      oneOf:
+        - $ref: '#/components/schemas/StudentUserInfo'
+        - $ref: '#/components/schemas/CoachUserInfo'
+
+    FriendUserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        name:
+          type: string
+          example: John Doe
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        isReadyTraining:
+          type: boolean
+          example: true
+
+
+    UpdateStudentUserInfo:
+      type: object
+      properties:
+        email:
+          type: string
+          example: John.doe@gmail.com
+        name:
+          type: string
+          example: John Doe
+        avatar:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        dateOfBirth:
+          $ref: '#/components/schemas/Date'
+        description:
+          type: string
+          example: Нормальный человек
+        location:
+          $ref: '#/components/schemas/LocationEnum'
+        imageForSite:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        timeForTraining:
+          $ref: '#/components/schemas/TimeForTrainingEnum'
+        allCaloriesToReset:
+          type: number
+          example: 3000
+        caloriesToResetInDay:
+          type: number
+          example: 3000
+        trainingIsReady:
+          type: boolean
+          example: true
+
+    UpdateCoachUserInfo:
+      type: object
+      properties:
+        email:
+          type: string
+          example: John.doe@gmail.com
+        name:
+          type: string
+          example: John Doe
+        avatar:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        dateOfBirth:
+          $ref: '#/components/schemas/Date'
+        description:
+          type: string
+          example: Нормальный человек
+        location:
+          $ref: '#/components/schemas/LocationEnum'
+        imageForSite:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.jpeg
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        certificates:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.pdf
+        awardsToCoach:
+          type: string
+          example: Серьехный тренер добивающийся своих целей.
+        personalTraining:
+          type: boolean
+          example: true
+
+    UpdateUserInfo:
+      oneOf:
+        - $ref: '#/components/schemas/UpdateStudentUserInfo'
+        - $ref: '#/components/schemas/UpdateCoachUserInfo'
+
+    LoginUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: John.doe@gmail.com
+        password:
+          type: string
+          example: password
+
+
+    LoggedUser:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example:
+            - $ref: "#/components/schemas/Token"
+        refreshToken:
+          type: string
+          example:
+            - $ref: "#/components/schemas/Token"
+
+
+
+    CreateTraining:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Mega Training
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        timeForTraining:
+          $ref: '#/components/schemas/TimeForTrainingEnum'
+        price:
+          type: number
+          example: 2000
+        quantityOfCalories:
+          type: number
+          example: 3000
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        description:
+          type: string
+          example: Нормальный человек
+        videoOfTraining:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.mp4
+        specialOffer:
+          type: boolean
+          example: true
+
+    CoachTrainingInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        name:
+          type: string
+          example: Mega Training
+        skillLevel:
+          $ref: '#/components/schemas/SkillLevelEnum'
+        trainingType:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrainingTypeEnum'
+        timeForTraining:
+          $ref: '#/components/schemas/TimeForTrainingEnum'
+        price:
+          type: number
+          example: 2000
+        quantityOfCalories:
+          type: number
+          example: 3000
+        gender:
+          $ref: '#/components/schemas/GenderEnum'
+        description:
+          type: string
+          example: Нормальный человек
+        videoOfTraining:
+          type: string
+          example: /uploads/kHulIr1IkHNJ8FhSGGJ0X.mp4
+        specialOffer:
+          type: boolean
+          example: true
+
+    CreateOrder:
+      type: object
+      properties:
+        purchaseType:
+          type: string
+          example: Subscription
+        productId:
+          type: string
+          example: MongoID
+        productPrice:
+          type: number
+          example: 2000
+        quantity:
+          type: number
+          example: 4
+        orderAmount:
+          type: number
+          example: 8000
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+
+    StudentUserOrder:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        purchaseType:
+          type: string
+          example: Subscription
+        productId:
+          type: string
+          example: MongoID
+        productPrice:
+          type: number
+          example: 2000
+        quantity:
+          type: number
+          example: 4
+        orderAmount:
+          type: number
+          example: 8000
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        creatorUserId:
+          type: string
+          example: MongoID
+        coachUserId:
+          type: string
+          example: MongoID
+        product:
+          $ref: '#/components/schemas/CoachTrainingInfo'
+
+    CoachOrderInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        productId:
+          type: string
+          example: MongoID
+        quantity:
+          type: number
+          example: 4
+        totalAmount:
+          type: number
+          example: 8000
+        product:
+          $ref: '#/components/schemas/CoachTrainingInfo'
+
+    OrderInfo:
+      oneOf:
+        - $ref: '#/components/schemas/StudentUserOrder'
+        - $ref: '#/components/schemas/CoachOrderInfo'
+
+    BalanceInfo:
+      type: object
+      properties:
+        productInfo:
+          $ref: '#/components/schemas/CoachTrainingInfo'
+        quantity:
+          type: number
+          example: 4
+
+
+
+
+
+
+
+
+
+    ProductCardInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: UUID
+        title:
+          type: string
+          example: Мощная гитара
+        description:
+          type: string
+          example: Описание гитары
+        guitarType:
+          $ref: '#/components/schemas/GuitarType'
+          example: Electro
+        guitarStringsCount:
+          $ref: '#/components/schemas/GuitarStringsCount'
+        article:
+          type: string
+          example: dasd1fad5sadsa
+        rating:
+          type: number
+          example: 4
+        price:
+          type: number
+          example: 20000
+        imageLink:
+          type: string
+          example: /api/products/upload/dasdfsdfsd.jpeg
+        commentsCount:
+          type: number
+          example: 24
+        createdAt:
+          $ref: '#/components/schemas/Date'
+          example: 2021-12-12T21:55:28.147Z
+
+    CreateOrder:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: string
+            example: UUID product
+        totalCount:
+          type: number
+          example: 5
+        totalPrice:
+          type: number
+          example: 100000
+
+    OrderProduct:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/ProductCardInfo'
+        price:
+          type: number
+          example: 20000
+        count:
+          type: number
+          example: 5
+        totalPrice:
+          type: number
+          example: 100000
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderProduct'
+        totalCount:
+          type: number
+          example: 5
+        totalPrice:
+          type: number
+          example: 100000
+        createdAt:
+          $ref: '#/components/schemas/Date'
+
+
+
+    CreateComment:
+      type: object
+      properties:
+        productId:
+          type: string
+          example: UUID
+        advantages:
+          type: string
+          example: Хорошая гитара
+        disadvantages:
+          type: string
+          example: Плохая гитара
+        comment:
+          type: string
+          example: Отзыв о гитаре
+        score:
+          $ref: "#/components/schemas/Rating"
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        username:
+          type: string
+          example: John Doe
+        productId:
+          type: string
+          example: UUID
+        advantages:
+          type: string
+          example: Хорошая гитара
+        disadvantages:
+          type: string
+          example: Плохая гитара
+        comment:
+          type: string
+          example: Отзыв о гитаре
+        score:
+          $ref: "#/components/schemas/Rating"
+        createdAt:
+          $ref: '#/components/schemas/Date'
+
+
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: MongoID
+        email:
+          type: string
+          example: John.doe@gmail.com
+        username:
+          type: string
+          example: John Doe
+        isAdmin:
+          type: boolean
+          example: false
+
+
+    FilmId:
+      type: string
+      example: 507f1f77bcf86cd799439011
+
+    ObjectRequestBodyError:
+      type: string
+      example: У вас заполнены некорректно следующие поля - {тут происходит перечисление полей}

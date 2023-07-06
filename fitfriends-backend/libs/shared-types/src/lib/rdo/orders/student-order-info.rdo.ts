@@ -17,25 +17,25 @@ export class StudentOrderInfoRdo implements OrderInterface {
   id: string;
 
   @Expose()
-  purchaseType?: ProductType;
+  purchaseType: ProductType;
 
   @Expose()
-  productId?: string;
+  productId: string;
 
   @Expose()
-  productPrice?: number;
+  productPrice: number;
 
   @Expose()
-  quantity?: number;
+  quantity: number;
 
   @Expose()
-  orderAmount?: number;
+  orderAmount: number;
 
   @Expose()
-  paymentMethod?: PaymentType;
+  paymentMethod: PaymentType;
 
   @Expose()
-  createdAt?: Date;
+  createdAt: Date;
 
   @Expose()
   creatorUserId: string;
@@ -44,5 +44,5 @@ export class StudentOrderInfoRdo implements OrderInterface {
   coachUserId: string;
 
   @Expose()
-  product?: CoachTrainingRdo;
+  product: CoachTrainingRdo;
 }

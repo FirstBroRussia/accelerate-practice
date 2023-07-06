@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CoachCreateUserDto, FindUsersQuery, GetFriendsListQuery, JwtUserPayloadDto, LoginUserDto, StudentCreateUserDto, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, FindUsersQuery, GetFriendsListQuery, JwtUserPayloadDto, LoginUserDto, StudentCreateUserDto, UpdateCoachUserInfoDto, UpdateStatusRequestTrainingDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
 import { compareHash } from '@fitfriends-backend/core';
 import { UsersMicroserviceEnvInterface } from '../assets/interface/users-microservice-env.interface';
 import { UsersRepositoryService } from './users-repository/users-repository.service';
 import { BaseUserEntity, CoachUserEntity, StudentUserEntity } from './users-repository/entity/user.entity';
+import { RequestTrainingEntity } from './users-repository/entity/request-training.entity';
 
 
 @Injectable()
@@ -152,6 +153,67 @@ export class UsersService {
 
 
     return result;
+  }
+
+  public async getRequestTrainingFriendList(creatorUserId: string, friendIds: string[]): Promise<RequestTrainingEntity[]> {
+    return await this.usersRepository.getRequestTrainingFriendList(creatorUserId, friendIds);
+  }
+
+  public async createRequestTraining(creatorUserId: string, targetUserId: string): Promise<RequestTrainingEntity> {
+    const existFriend = await this.usersRepository.checkFriendUserByFriendsList(creatorUserId, targetUserId);
+
+    if (!existFriend) {
+      throw new BadRequestException('Этот пользователь не является вашим другом. Вы не можете прислать ему запрос на проведение тренировки.');
+    }
+
+    const existTargetUser = await this.findById(targetUserId);
+
+    if (existTargetUser.role === 'Student') {
+      if (!(existTargetUser as StudentUserEntity).trainingIsReady) {
+        throw new BadRequestException('Данный пользователь не готов к совместной тренировке.');
+      }
+    } else if (existTargetUser.role === 'Coach') {
+      if (!(existTargetUser as CoachUserEntity).personalTraining) {
+        throw new BadRequestException('Данный тренер не готов к персональной тренировке.');
+      }
+    }
+
+    const existDocument_1 = await this.usersRepository.getRequestTrainingDocumentByCreatorUserIdAndTargetUserId(creatorUserId, targetUserId);
+
+    if (existDocument_1) {
+      throw new BadRequestException('Данный запрос на совместную/персональную тренировку уже существует.');
+    }
+
+    const result = await this.usersRepository.createRequestTraining(creatorUserId, targetUserId);
+
+    this.logger.log('Создан новый запрос на совместную/персональную тренировку.');
+
+
+    return result;
+  }
+
+  public async updateStatusRequestTraining(requestId: string, targetUserId: string, dto: UpdateStatusRequestTrainingDto): Promise<any> {
+    const { status } = dto;
+
+    console.log(requestId);
+    console.log(targetUserId);
+
+    const existDocument = await this.usersRepository.getRequestTrainingDocumentById(requestId);
+
+    if (!existDocument) {
+      throw new BadRequestException(`Данной заявки с ID: ${requestId} не существует.`);
+    }
+
+    const updatedDocument = await this.usersRepository.updateStatusRequestTrainingDocumentByIdAndTargetUserId(requestId, targetUserId, status);
+
+    if (!updatedDocument) {
+      throw new ForbiddenException('Вы не имеете право изменять статус данной заявки.');
+    }
+
+    this.logger.log(`Заявка на тренировку с ID: ${requestId}; изменен статус на новый: "${status}".`);
+
+
+    return updatedDocument;
   }
 
 

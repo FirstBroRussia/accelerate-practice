@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { OrdersRepositoryService } from './orders-repository/orders-repository.service';
-import { CreateOrderDto, GetOrdersQuery } from '@fitfriends-backend/shared-types';
+import { CreateOrderDto, GetDocumentQuery } from '@fitfriends-backend/shared-types';
 import { OrderEntity } from './orders-repository/entity/order.entity';
+import { BalanceOrdersFromOrdersMicroserviceDto } from '../../../../libs/shared-types/src/lib/dto/orders/balance-orders-from-orders-microservice.dto';
 
 
 @Injectable()
@@ -22,8 +23,34 @@ export class OrdersService {
     return newOrder;
   }
 
-  public async getOrders(id: string, query: GetOrdersQuery): Promise<OrderEntity[]> {
-    return await this.ordersRepository.getOrdersByIdAndRole(id, query);
+  public async getOrders(creatorUserId: string, query: GetDocumentQuery): Promise<OrderEntity[]> {
+    return await this.ordersRepository.getOrdersByUserIdAndRole(creatorUserId, query);
+  }
+
+  public async getOrderById(id: string): Promise<OrderEntity> {
+    const result = await this.ordersRepository.getOrderById(id);
+
+    if (!result) {
+      throw new BadRequestException(`Ордера с ID: ${id} не существует.`);
+    }
+
+
+    return result;
+  }
+
+  public async getOrderByIdAndCreatorUserId(orderId: string, creatorUserId): Promise<OrderEntity> {
+    const result = await this.ordersRepository.getOrderByIdAndCreatorUserId(orderId, creatorUserId);
+
+    if (!result) {
+      throw new BadRequestException(`Данного ордера для данного пользователя не существует.`);
+    }
+
+
+    return result;
+  }
+
+  public async getOrdersForBalanceStudentUser(studentUserId: string): Promise<BalanceOrdersFromOrdersMicroserviceDto> {
+    return await this.ordersRepository.getOrdersForBalanceStudentUser(studentUserId);
   }
 
 }

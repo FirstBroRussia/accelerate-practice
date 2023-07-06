@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import { join, resolve } from 'path';
 
-import { Request, query } from 'express';
+import { Request } from 'express';
 
-import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery, CreateOrderDto, StudentOrderInfoRdo, GetOrdersQuery, GetTrainingListByTrainingIdsDto, CoachOrderInfoRdo } from '@fitfriends-backend/shared-types';
-import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, InternalServerErrorException, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
+import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery, CreateOrderDto, StudentOrderInfoRdo, GetDocumentQuery, GetTrainingListByTrainingIdsDto, CoachOrderInfoRdo, RequestTrainingRdo, FriendUserInfoRdo, UpdateStatusRequestTrainingDto, BalanceRdo, CreateCommentDto, CreateCommentForCommentsMicroserviceDto, CommentRdo, NotifyMessageEnum, CreateNotifyForNotifyMicroservice, NotifyRdo } from '@fitfriends-backend/shared-types';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpCode, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CheckAuthUserRoleGuard } from 'apps/bff/src/assets/guard/check-auth-user-role.guard';
 import { JwtAuthGuard } from 'apps/bff/src/assets/guard/jwt-auth.guard';
@@ -15,6 +15,9 @@ import { fillRDO } from '@fitfriends-backend/core';
 import { HttpStatusCode } from 'axios';
 import { UsersMicroserviceClientService } from '../microservice-client/users-microservice-client/users-microservice-client.service';
 import { OrdersMicroserviceClientService } from '../microservice-client/orders-microservice-client/orders-microservice-client.service';
+import { CommentsMicroserviceClientService } from '../microservice-client/comments-microservice-client/comments-microservice-client.service';
+import { NotifyMicroserviceClientService } from '../microservice-client/notify-microservice-client/notify-microservice-client.service';
+import { RpcException } from '@nestjs/microservices';
 
 
 @Controller('cabinet')
@@ -26,6 +29,8 @@ export class CabinetToBffController {
     private readonly usersMicroserviceClient: UsersMicroserviceClientService,
     private readonly trainingsMicroserviceClient: TrainingsMicroserviceClientService,
     private readonly ordersMicroserviceClient: OrdersMicroserviceClientService,
+    private readonly commentsMicroserviceClient: CommentsMicroserviceClientService,
+    private readonly notifyMicroserviceClient: NotifyMicroserviceClientService,
   ) { }
 
 
@@ -115,17 +120,6 @@ export class CabinetToBffController {
     return fillRDO(CoachTrainingRdo, result) as unknown as CoachTrainingRdo[];
   }
 
-  @Post('updaterating/:trainingId')
-  @HttpCode(HttpStatusCode.Ok)
-  @UseInterceptors(new TransformAndValidateDtoInterceptor(UpdateRatingCoachTrainingDto))
-  @UseGuards(new CheckAuthUserRoleGuard(UserRoleEnum.Coach))
-  @UseGuards(JwtAuthGuard)
-  public async updateRating(@Param('trainingId', MongoIdValidationPipe) trainingId: string, @Body() dto: UpdateRatingCoachTrainingDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
-    const creatorUserId = req.user.sub;
-
-    await this.trainingsMicroserviceClient.updateRating(trainingId, creatorUserId, dto);
-  }
-
   // ---------------------------
 
   // FRIENDS
@@ -138,6 +132,20 @@ export class CabinetToBffController {
     const creatorUserId = req.user.sub;
 
     await this.usersMicroserviceClient.addFriend(friendUserId, creatorUserId);
+
+    const friendUserInfo = await this.usersMicroserviceClient.getUserInfo(friendUserId);
+
+    const dtoForNotifyMicroservice: CreateNotifyForNotifyMicroservice = {
+      creatorUserId: creatorUserId,
+      targetUserId: friendUserId,
+      userEmail: friendUserInfo.email,
+      message: NotifyMessageEnum.AddFriend,
+    };
+
+    this.notifyMicroserviceClient.addFriendEvent(dtoForNotifyMicroservice)
+      .catch((err: RpcException) => {
+        throw new BadRequestException(err.message);
+      });
   }
 
   @Get('friends/removefriend/:friendUserId')
@@ -152,16 +160,64 @@ export class CabinetToBffController {
   @Get('friends/list')
   @UseInterceptors(new TransformAndValidateQueryInterceptor(GetFriendsListQuery))
   @UseGuards(JwtAuthGuard)
-  // public async getFriendsList(@Req() req: Request & { user: JwtUserPayloadRdo }): Promise<StudentUserRdo | CoachUserRdo> {
-  public async getFriendsList(@Query() query: GetFriendsListQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
+  public async getFriendsList(@Query() query: GetFriendsListQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<FriendUserInfoRdo[]> {
     const creatorUserId = req.user.sub;
 
     const friendsUserList = await this.usersMicroserviceClient.getFriendsList(creatorUserId, query);
 
-    console.log(friendsUserList);
 
-    // Тут еще нужно получить данные о совместных/персональных тренировках и присоединить их к соответствующим пользователям
+    return fillRDO(FriendUserInfoRdo, friendsUserList) as unknown as FriendUserInfoRdo[];
+  }
 
+  @Get('friends/requesttraining/create/:targetUserId')
+  @HttpCode(HttpStatusCode.Ok)
+  @UseGuards(JwtAuthGuard)
+  public async createRequestTraining(@Param('targetUserId', MongoIdValidationPipe) targetUserId: string, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
+    const { sub, role } = req.user;
+
+    if (role === 'Coach') {
+      throw new BadRequestException('Пользователь с ролью "Тренер" не может сам лично создавать заявки на персональные тренировки.');
+    }
+
+    const targetUserInfo = await this.usersMicroserviceClient.getUserInfo(targetUserId);
+
+    const result = await this.usersMicroserviceClient.createRequestTraining(sub, targetUserId);
+
+    if (targetUserInfo.role === 'Student') {
+      const dtoForNotifyMicroservice: CreateNotifyForNotifyMicroservice = {
+        creatorUserId: sub,
+        targetUserId: targetUserId,
+        userEmail: targetUserInfo.email,
+        message: NotifyMessageEnum.RequestTrainingToStudentUser,
+      };
+
+      this.notifyMicroserviceClient.requestTrainingToStudentUserEvent(dtoForNotifyMicroservice)
+        .catch((err: RpcException) => {
+          throw new BadRequestException(err.message);
+        });
+    } else {
+      const dtoForNotifyMicroservice: CreateNotifyForNotifyMicroservice = {
+        creatorUserId: sub,
+        targetUserId: targetUserId,
+        userEmail: targetUserInfo.email,
+        message: NotifyMessageEnum.RequestCoachTraining,
+      };
+
+      this.notifyMicroserviceClient.requestCoachTrainingEvent(dtoForNotifyMicroservice)
+        .catch((err: RpcException) => {
+          throw new BadRequestException(err.message);
+        });
+    }
+  }
+
+  @Get('friends/requesttraining/updatestatus/:requestId')
+  @HttpCode(HttpStatusCode.Ok)
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(UpdateStatusRequestTrainingDto))
+  @UseGuards(JwtAuthGuard)
+  public async updateStatusRequestTraining(@Param('requestId', MongoIdValidationPipe) requestId: string, @Req() req: Request & { user: JwtUserPayloadRdo }, @Body() dto: UpdateStatusRequestTrainingDto): Promise<void> {
+    const { sub } = req.user;
+
+    await this.usersMicroserviceClient.updateStatusRequestTraining(requestId, sub, dto);
   }
 
   // --------------------------
@@ -171,7 +227,7 @@ export class CabinetToBffController {
   @Post('orders')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateOrderDto))
   @UseGuards(JwtAuthGuard)
-  public async createOrder(@Body() dto: CreateOrderDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<StudentOrderInfoRdo> {
+  public async createOrder(@Body() dto: CreateOrderDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
     if (req.user.role === 'Coach') {
       throw new ForbiddenException('Доступ запрещен. Пользователь с ролью "Тренер" не имеет права делать заказ.');
     }
@@ -191,16 +247,13 @@ export class CabinetToBffController {
     }
 
 
-    const result = await this.ordersMicroserviceClient.createOrder(creatorUserId, coachCreator, dto);
-
-
-    return fillRDO(StudentOrderInfoRdo, result);
+    await this.ordersMicroserviceClient.createOrder(creatorUserId, coachCreator, dto);
   }
 
   @Get('orders')
-  @UseInterceptors(new TransformAndValidateQueryInterceptor(GetOrdersQuery))
+  @UseInterceptors(new TransformAndValidateQueryInterceptor(GetDocumentQuery))
   @UseGuards(JwtAuthGuard)
-  public async getOrders(@Req() req: Request & { user: JwtUserPayloadRdo }, @Query() query: GetOrdersQuery): Promise<(StudentOrderInfoRdo | CoachOrderInfoRdo)[]> {
+  public async getOrders(@Req() req: Request & { user: JwtUserPayloadRdo }, @Query() query: GetDocumentQuery): Promise<(StudentOrderInfoRdo | CoachOrderInfoRdo)[]> {
     const { sub, role } = req.user;
 
     query['role'] = role;
@@ -235,6 +288,148 @@ export class CabinetToBffController {
 
 
     return rdo as unknown as (StudentOrderInfoRdo | CoachOrderInfoRdo)[];
+  }
+
+  // ----------------------
+
+  // BALANCE
+
+  @Get('balance')
+  @UseGuards(JwtAuthGuard)
+  public async getBalance(@Req() req: Request & { user: JwtUserPayloadRdo }): Promise<BalanceRdo[]> {
+    const { sub, role } = req.user;
+
+    if (role !== 'Student') {
+      throw new ForbiddenException('Доступ запрещен.');
+    }
+
+    const { productIds, products } = await this.ordersMicroserviceClient.getBalance(sub);
+
+    const trainingList = await this.trainingsMicroserviceClient.getTrainingListByTrainingIds({ ids: productIds });
+
+
+    const balanceList = products.map(item => {
+      for (const trainingItem of trainingList) {
+        if (trainingItem.id === item.productId) {
+          return {
+            ...item,
+            productInfo: trainingItem,
+          };
+        }
+      }
+    });
+
+
+    return fillRDO(BalanceRdo, balanceList) as unknown as BalanceRdo[];
+  }
+
+  // ---------------------
+
+  // COMMENT
+
+  @Post('comments')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateCommentDto))
+  @UseGuards(JwtAuthGuard)
+  public async createComment(@Body() dto: CreateCommentDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<CommentRdo> {
+    const { sub, role } = req.user;
+
+    if (role === 'Coach') {
+      throw new BadRequestException('Тренер не имеет права оставлять комментарии.');
+    }
+
+    const { orderId, description, score } = dto;
+
+    const order = await this.ordersMicroserviceClient.getOrderByIdAndCreatorUserId(orderId, sub);
+
+    const dtoForCommentsMicroservice: CreateCommentForCommentsMicroserviceDto = {
+      creatorUserId: sub,
+      trainingId: order.productId,
+      orderId: orderId,
+      description: description,
+      score: score,
+    };
+
+    const result = await this.commentsMicroserviceClient.createComment(dtoForCommentsMicroservice);
+
+    await this.trainingsMicroserviceClient.updateRating(order.productId, { score: score });
+
+    const userInfo = await this.usersMicroserviceClient.getUserInfo(result.creatorUserId);
+
+    const transformResult = {
+      ...result,
+      userInfo: userInfo,
+    };
+
+
+    return fillRDO(CommentRdo, transformResult);
+  }
+
+  @Post('comments/:trainingId')
+  @UseInterceptors(new TransformAndValidateQueryInterceptor(GetDocumentQuery))
+  @UseGuards(JwtAuthGuard)
+  public async findComments(@Param('trainingId', MongoIdValidationPipe) trainingId: string, @Query() query: GetDocumentQuery): Promise<CommentRdo[]> {
+    const { comments, creatorUserIds } = await this.commentsMicroserviceClient.findCommentsByTrainingId(trainingId, query);
+
+    const userList = await this.usersMicroserviceClient.getUserList({ userIds: creatorUserIds });
+
+    const transformCommentsList = comments.map(item => {
+      for (const user of userList) {
+        if (user.id === item.creatorUserId) {
+          return {
+            ...item,
+            userInfo: user,
+          };
+        }
+      }
+    });
+
+
+    return fillRDO(CommentRdo, transformCommentsList) as unknown as CommentRdo[];
+  }
+
+  // ------------------
+
+  // NOTIFY
+
+  @Get('notify')
+  @UseGuards(JwtAuthGuard)
+  public async getNotify(@Req() req: Request & { user: JwtUserPayloadRdo }): Promise<NotifyRdo[]> {
+    const creatorUserId = req.user.sub;
+
+    const result = await this.notifyMicroserviceClient.getNotify(creatorUserId)
+      .catch((err: RpcException) => {
+        throw new BadRequestException(err.message.toString());
+    });
+
+    const { creatorUserIds, notifications } = result;
+
+    const userList = await this.usersMicroserviceClient.getUserList({ userIds: creatorUserIds });
+
+    const transformNotifications = notifications.map(item => {
+      for (const userInfo of userList) {
+        if (item.creatorUserId === userInfo.id) {
+          return {
+            ...item,
+            userInfo: userInfo,
+          };
+        }
+      }
+    });
+
+
+    return fillRDO(NotifyRdo, transformNotifications) as unknown as NotifyRdo[];
+  }
+
+  @Delete('notify/:notifyId')
+  @HttpCode(HttpStatusCode.Ok)
+  @UseGuards(JwtAuthGuard)
+  public async deleteNotify(@Param('notifyId', MongoIdValidationPipe) notifyId: string, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
+    const creatorUserId = req.user.sub;
+
+    await this.notifyMicroserviceClient.removeNotify(notifyId, creatorUserId)
+      .catch((err: RpcException) => {
+        throw new BadRequestException(err.message.toString());
+    });
   }
 
 }

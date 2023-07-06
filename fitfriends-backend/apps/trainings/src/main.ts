@@ -16,7 +16,6 @@ import { TrainingsMicroserviceEnvInterface } from './assets/interface/trainings-
 async function bootstrap() {
   const app = await NestFactory.create(TrainingsModule);
 
-
   const config = app.get(ConfigService<TrainingsMicroserviceEnvInterface>);
   const httpAdapter = app.get(HttpAdapterHost);
 

@@ -5,7 +5,7 @@
 // }
 
 export const GenderEnum = {
-  Men: 'Men',
+  Men: 'Man',
   Woman: 'Woman',
   Any: 'Any',
 } as const;

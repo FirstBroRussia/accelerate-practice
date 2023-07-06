@@ -4,7 +4,8 @@ import { BaseUserEntity, CoachUserEntity, StudentUserEntity } from './entity/use
 import { FilterQuery, Model, QueryOptions } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-microservice-env.interface';
-import { CoachCreateUserDto, CoachRoleInterface, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, GetFriendsListQuery, StudentCreateUserDto, StudentRoleInterface, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, CoachRoleInterface, DEFAULT_PAGINATION_LIMIT, FindUsersQuery, GetFriendsListQuery, RequestTrainingStatusType, StudentCreateUserDto, StudentRoleInterface, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
+import { RequestTrainingEntity } from './entity/request-training.entity';
 
 @Injectable()
 export class UsersRepositoryService {
@@ -15,6 +16,7 @@ export class UsersRepositoryService {
     @InjectModel(BaseUserEntity.name) private readonly usersModel: Model<BaseUserEntity>,
     @InjectModel(StudentUserEntity.name) private readonly studentUserModel: Model<StudentUserEntity>,
     @InjectModel(CoachUserEntity.name) private readonly coachUserModel: Model<CoachUserEntity>,
+    @InjectModel(RequestTrainingEntity.name) private readonly requestTrainingModel: Model<RequestTrainingEntity>,
   ) { }
 
 
@@ -139,6 +141,56 @@ export class UsersRepositoryService {
     return await this.usersModel.findById(id, {
       friends: 1,
     }, options).exec();
+  }
+
+  public async createRequestTraining(creatorUserId: string, targetUserId: string): Promise<RequestTrainingEntity> {
+    const newRequestTrainingObj = new RequestTrainingEntity().fillObject(creatorUserId, targetUserId);
+
+    return await this.requestTrainingModel.create(newRequestTrainingObj);
+  }
+
+  public async updateRequestTrainingStatus(id: string, status: RequestTrainingStatusType): Promise<RequestTrainingEntity> {
+    return await this.requestTrainingModel.findByIdAndUpdate(id, {
+      $set: {
+        status: status,
+        statusChangeDate: new Date().toISOString(),
+      },
+    }, { new: true, });
+  }
+
+  public async getRequestTrainingDocumentByCreatorUserIdAndTargetUserId(creatorUserId: string, targetUserId: string): Promise<RequestTrainingEntity | null> {
+    return await this.requestTrainingModel.findOne({
+      creatorUserId: creatorUserId,
+      targetUserId: targetUserId,
+    });
+  }
+
+  public async getRequestTrainingDocumentByIdAndTargetUserId(id: string, targetUserId: string): Promise<RequestTrainingEntity | null> {
+    return await this.requestTrainingModel.findOne({
+      _id: id,
+      targetUserId: targetUserId,
+    });
+  }
+
+  public async getRequestTrainingDocumentById(id: string): Promise<RequestTrainingEntity | null> {
+    return await this.requestTrainingModel.findById(id);
+  }
+
+  public async updateStatusRequestTrainingDocumentByIdAndTargetUserId(id: string, targetUserId: string, status: Omit<RequestTrainingStatusType, "Waiting">): Promise<RequestTrainingEntity | null> {
+    return await this.requestTrainingModel.findOneAndUpdate({
+      _id: id,
+      targetUserId: targetUserId,
+    }, {
+      $set: { status: status },
+    }, { new: true, });
+  }
+
+  public async getRequestTrainingFriendList(creatorUserId: string, friendIds: string[]): Promise<RequestTrainingEntity[]> {
+    return await this.requestTrainingModel.find({
+      creatorUserId: { $in: friendIds, },
+      targetUserId: creatorUserId,
+    });
+
   }
 
 }

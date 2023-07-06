@@ -1,8 +1,8 @@
-import { Expose, Transform } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 
-import { TrainingType } from "@fitfriends-backend/shared-types";
+import { RequestTrainingInfoDto, TrainingType, UserRoleType } from "@fitfriends-backend/shared-types";
 
 
 export class FriendUserInfoRdo {
@@ -20,20 +20,28 @@ export class FriendUserInfoRdo {
   name: string;
 
   @Expose()
+  role: UserRoleType;
+
+  @Expose()
   trainingType: TrainingType[];
 
   @Expose()
-  @Transform(({ obj }) => {
-    if ((obj as Object).hasOwnProperty('trainingIsReady')) {
+  @Transform(({ value, obj }) => {
+    if ('trainingIsReady' in obj) {
       return obj['trainingIsReady'];
-    } else if ((obj as Object).hasOwnProperty('personalTraining')) {
+    } else if ('personalTraining' in obj) {
       return obj['personalTraining'];
+    } else if ('isReadyTraining' in obj) {
+      return value;
     }
 
-    Logger.log('Не получены данные из БД по поводу готовности к тренировки.', FriendUserInfoRdo.name);
-
-    throw new InternalServerErrorException('Внутренняя ошибка сервера. Повторите запрос еще раз.');
+    Logger.log('Не получены данные из БД по поводу готовности к тренировки.');
+    throw new InternalServerErrorException('Внутренняя ошибка сервера при трансформации данных пользователя. Повторите запрос еще раз.');
   })
   isReadyTraining: boolean;
+
+  @Expose()
+  @Type(() => RequestTrainingInfoDto)
+  requestTrainingInfo: RequestTrainingInfoDto;
 
 }

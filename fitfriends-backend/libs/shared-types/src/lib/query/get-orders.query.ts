@@ -7,7 +7,7 @@ import { AscDescSortType } from "../type/common/asc-desc-sort.type";
 import { UserRoleType } from "../type/users/user-role.type";
 
 
-export class GetOrdersQuery {
+export class GetDocumentQuery {
   @Expose()
   @Type(() => String)
   @IsEnum(UserRoleEnum)

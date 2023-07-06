@@ -6,6 +6,8 @@ import { UsersMicroserviceEnvInterface } from '../../assets/interface/users-micr
 
 import { getMongoConnectionUrl } from '@fitfriends-backend/core';
 import { BaseUserEntity, CoachUserEntity, CoachUserEntitySchema, StudentUserEntity, StudentUserEntitySchema, UserEntitySchema } from './entity/user.entity';
+import { RequestTrainingEntity, RequestTrainingEntitySchema } from './entity/request-training.entity';
+
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { BaseUserEntity, CoachUserEntity, CoachUserEntitySchema, StudentUserEnti
         { name: StudentUserEntity.name, schema: StudentUserEntitySchema, },
         { name: CoachUserEntity.name, schema: CoachUserEntitySchema, },
       ], },
+      { name: RequestTrainingEntity.name, schema: RequestTrainingEntitySchema, },
     ]),
   ],
   providers: [

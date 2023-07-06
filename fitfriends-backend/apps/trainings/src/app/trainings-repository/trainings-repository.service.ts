@@ -58,7 +58,7 @@ export class TrainingsRepositoryService {
     });
   }
 
-  public async getTrainingListByCreatorId(creatorUserId: string, query: FindCoachTrainingsQuery): Promise<CoachTrainingEntity[]> {
+  public async getTrainingListByCreatorUserId(creatorUserId: string, query: FindCoachTrainingsQuery): Promise<CoachTrainingEntity[]> {
     const { minPrice, maxPrice, minCalories, maxCalories, minRating, maxRating, duration, page, sort } = query;
 
     const filter: FilterQuery<CoachTrainingEntity> = {
@@ -96,7 +96,7 @@ export class TrainingsRepositoryService {
     const options: QueryOptions<CoachTrainingEntity> = {
       skip: DEFAULT_PAGINATION_LIMIT * (page - 1),
       limit: DEFAULT_PAGINATION_LIMIT,
-      sort: { createdAt: sort === 'desc' ? -1 : 1 },
+      sort: { price: sort === 'desc' ? -1 : 1 },
     };
 
 

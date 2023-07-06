@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, FriendUserInfoRdoFromUsersMicroservice, GetFriendsListQuery, JwtUserPayloadDto, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
+import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, FriendUserInfoRdo, GetFriendsListQuery, GetUserListDto, JwtUserPayloadDto, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, RequestTrainingRdo, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStatusRequestTrainingDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
 
 import { UsersService } from './users.service';
@@ -138,13 +138,58 @@ export class UsersController {
   @UseInterceptors(new TransformAndValidateDtoInterceptor(GetFriendsListQuery, {
     isQueryDto: true,
   }))
-  public async getFriendsList(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Body() dto: GetFriendsListQuery): Promise<FriendUserInfoRdoFromUsersMicroservice[]> {
+  public async getFriendsList(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Body() dto: GetFriendsListQuery): Promise<FriendUserInfoRdo[]> {
     const { friends } = await this.usersService.getFriendsList(creatorUserId, dto);
 
-    const usersList = await this.usersService.getUsersListByIds(friends);
+    const friendList = await this.usersService.getUsersListByIds(friends);
+
+    const requestTrainingFriendList = await this.usersService.getRequestTrainingFriendList(creatorUserId, friends);
+
+    const transformFriendList = friendList.map(item => {
+      for (const requestTrainingFriendItem of requestTrainingFriendList) {
+        if (requestTrainingFriendItem.creatorUserId === item._id.toString()) {
+          return {
+            ...item.toObject(),
+            requestTrainingInfo: requestTrainingFriendItem,
+          };
+        }
+      }
+
+      return {
+        ...item.toObject(),
+        requestTrainingInfo: {},
+      };
+    });
 
 
-    return fillRDO(FriendUserInfoRdoFromUsersMicroservice, usersList) as unknown as FriendUserInfoRdoFromUsersMicroservice[];
+    return fillRDO(FriendUserInfoRdo, transformFriendList) as unknown as FriendUserInfoRdo[];
+  }
+
+  @Get('requesttraining/create/:creatorUserId/:targetUserId')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(GetFriendsListQuery))
+  public async createRequestTraining(@Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Param('targetUserId', MongoIdValidationPipe) targetUserId: string): Promise<RequestTrainingRdo> {
+    const result = await this.usersService.createRequestTraining(creatorUserId, targetUserId);
+
+
+    return fillRDO(RequestTrainingRdo, result);
+  }
+
+  @Post('requesttraining/updatestatus/:requestId/:targetUserId')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(UpdateStatusRequestTrainingDto))
+  public async updateStatusRequestTraining(@Param('requestId', MongoIdValidationPipe) requestId: string, @Param('targetUserId', MongoIdValidationPipe) targetUserId: string, @Body() dto: UpdateStatusRequestTrainingDto): Promise<void> {
+    await this.usersService.updateStatusRequestTraining(requestId, targetUserId, dto);
+  }
+
+  @Post('userlist')
+  @UseInterceptors(new TransformAndValidateDtoInterceptor(GetUserListDto))
+  public async getUserList(@Body() dto: GetUserListDto): Promise<StudentUserRdo[]> {
+    const { userIds } = dto;
+
+    const result = await this.usersService.getUsersListByIds(userIds);
+
+
+    return fillRDO(StudentUserRdo, result) as unknown as StudentUserRdo[];
   }
 
 }

@@ -44,6 +44,7 @@ class JwtEnvValidateConfig implements JwtMicroserviceEnvInterface {
   @IsString()
   MONGO_DB_PASSWORD: string;
 
+
 }
 
 export function jwtEnvValidateConfig(config: Record<string, unknown>) {

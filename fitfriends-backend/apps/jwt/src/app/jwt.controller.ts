@@ -9,6 +9,9 @@ import { fillRDO } from '@fitfriends-backend/core';
 import { JwtAccessTokenDto, JwtAccessTokenRdo, JwtRefreshTokenDto, JwtUserPayloadDto, JwtUserPayloadRdo, JwtValidationPipe, LoginUserRdo, LogoutedUserDto, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
 import { HttpStatusCode } from 'axios';
 
+import { ClientsModule, Transport, EventPattern } from '@nestjs/microservices';
+
+
 
 @Controller('jwt')
 export class JwtController {

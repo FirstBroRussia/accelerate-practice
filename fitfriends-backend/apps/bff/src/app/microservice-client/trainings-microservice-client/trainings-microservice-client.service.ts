@@ -132,8 +132,8 @@ export class TrainingsMicroserviceClientService {
     return data;
   }
 
-  public async updateRating(trainingId: string, creatorUserId: string, dto: UpdateRatingCoachTrainingDto): Promise<CoachTrainingRdo> {
-    const { data } = await axios.post(`${this.config.get('TRAININGS_MICROSERVICE_URL')}/trainings/updaterating/${trainingId}/${creatorUserId}`, dto, {
+  public async updateRating(trainingId: string, dto: UpdateRatingCoachTrainingDto): Promise<CoachTrainingRdo> {
+    const { data } = await axios.post(`${this.config.get('TRAININGS_MICROSERVICE_URL')}/trainings/updaterating/${trainingId}`, dto, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -154,5 +154,6 @@ export class TrainingsMicroserviceClientService {
 
     return data;
   }
+
 
 }

@@ -1,0 +1,25 @@
+version: '3.5'
+services:
+  rabbitmq:
+      image: rabbitmq:3.11-management
+      restart: always
+      ports:
+        - '5672:5672'
+        - '10100:15672'
+      environment:
+        RABBITMQ_DEFAULT_USER: admin
+        RABBITMQ_DEFAULT_PASS: test
+      healthcheck:
+        test: rabbitmq-diagnostics -q ping
+        interval: 10s
+        timeout: 5s
+        retries: 5
+
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    container_name: mailhogfakesmtp
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+

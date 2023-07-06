@@ -64,10 +64,10 @@ export class TrainingsController {
     return fillRDO(CoachTrainingRdo, result) as unknown as CoachTrainingRdo[];
   }
 
-  @Post('updaterating/:trainingId/:creatoruserId')
+  @Post('updaterating/:trainingId')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(UpdateRatingCoachTrainingDto))
-  public async updateRating(@Param('trainingId', MongoIdValidationPipe) trainingId: string, @Param('creatorUserId', MongoIdValidationPipe) creatorUserId: string, @Body() dto: UpdateRatingCoachTrainingDto): Promise<void> {
-    await this.trainingsService.updateRatingById(trainingId, creatorUserId, dto);
+  public async updateRating(@Param('trainingId', MongoIdValidationPipe) trainingId: string, @Body() dto: UpdateRatingCoachTrainingDto): Promise<void> {
+    await this.trainingsService.updateRatingById(trainingId, dto);
   }
 
 }
