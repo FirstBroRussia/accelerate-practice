@@ -23,3 +23,11 @@ services:
       - '8025:8025'
       - '1025:1025'
 
+  fitfriends.bff:
+    image: fitfriends.bff
+    container_name: fitfriends.bff.service
+    ports:
+      - 30000:3333
+    env_file:
+      - ./env/development.env
+
