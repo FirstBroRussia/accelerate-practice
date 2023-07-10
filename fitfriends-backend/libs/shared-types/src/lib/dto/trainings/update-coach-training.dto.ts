@@ -4,7 +4,7 @@ import { GenderType } from "../../type/users/gender.type";
 import { SkillLevelType } from "../../type/users/skill-level.type";
 import { TimeForTrainingType } from "../../type/users/time-for-training.type";
 import { TrainingType } from "../../type/users/training-type.type";
-import { IsBoolean, IsEnum, IsIn, IsInt, IsNotEmpty, IsString, Max, MaxLength, Min, MinLength } from "class-validator";
+import { IsBoolean, IsEnum, IsInt, IsString, Max, MaxLength, Min, MinLength } from "class-validator";
 import { TrainingsMicroserviceConstant } from "../../constant/trainings-microservice.constant";
 import { SkillLevelEnum } from "../../enum/users/skill-level.enum";
 import { TrainingTypeEnum } from "../../enum/users/training-type.enum";

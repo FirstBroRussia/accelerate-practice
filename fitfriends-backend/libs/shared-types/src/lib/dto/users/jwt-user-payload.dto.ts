@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer"
-import { IsEmail, IsEnum, IsInt, IsMongoId } from "class-validator";
+import { IsEmail, IsEnum, IsMongoId } from "class-validator";
 import { UserRoleEnum } from "../../enum/users/user-role.enum";
 import { JWTPayload } from "jose";
 

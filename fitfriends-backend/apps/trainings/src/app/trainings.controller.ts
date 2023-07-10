@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { TrainingsService } from './trainings.service';
 import { CoachTrainingRdo, CreateCoachTrainingDto, FindCoachTrainingsQuery, GetTrainingListByTrainingIdsDto, MongoIdValidationPipe, TransformAndValidateDtoInterceptor, UpdateCoachTrainingDto, UpdateRatingCoachTrainingDto } from '@fitfriends-backend/shared-types';
@@ -7,8 +7,6 @@ import { fillRDO } from '@fitfriends-backend/core';
 
 @Controller('trainings')
 export class TrainingsController {
-  private readonly logger = new Logger(TrainingsController.name);
-
   constructor(
     private readonly trainingsService: TrainingsService,
     ) { }

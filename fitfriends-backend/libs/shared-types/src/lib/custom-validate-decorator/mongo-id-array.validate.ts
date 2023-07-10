@@ -1,8 +1,10 @@
-import { TrainingType, TrainingTypeEnum } from "@fitfriends-backend/shared-types";
-import { ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isEnum, isMongoId, registerDecorator } from "class-validator";
+import { TrainingType } from "@fitfriends-backend/shared-types";
+import { ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isMongoId, registerDecorator } from "class-validator";
+
+const VALIDATOR_NAME = 'MongoIdArrayValidator';
 
 
-@ValidatorConstraint({ name: 'MongoIdArrayValidator', async: true, })
+@ValidatorConstraint({ name: VALIDATOR_NAME, async: true, })
 class MongoIdArrayValidator implements ValidatorConstraintInterface {
   async validate(array: TrainingType[]): Promise<boolean> {
 
@@ -20,10 +22,9 @@ class MongoIdArrayValidator implements ValidatorConstraintInterface {
 }
 
 export function IsMongoIdArrayValidator(validationOptions?: ValidationOptions) {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'MongoIdArrayValidator',
+      name: VALIDATOR_NAME,
       target: object.constructor,
       propertyName: propertyName,
       constraints: [],

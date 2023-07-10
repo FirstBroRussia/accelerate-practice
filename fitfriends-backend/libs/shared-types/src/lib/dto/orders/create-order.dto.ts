@@ -1,9 +1,8 @@
 import { Expose, Type } from "class-transformer";
 import { IsEnum, IsInt, IsMongoId, IsNotEmpty, Max, Min } from "class-validator";
 
-import { OrdersMicroserviceConstant, PaymentEnum, PaymentType, ProductEnum, ProductType, ZERO_VALUE } from "@fitfriends-backend/shared-types";
+import { OrderInterface, OrdersMicroserviceConstant, PaymentEnum, PaymentType, ProductEnum, ProductType, ZERO_VALUE } from "@fitfriends-backend/shared-types";
 
-import { OrderInterface } from "../../interface/orders/order.interface";
 
 
 export class CreateOrderDto implements OrderInterface {

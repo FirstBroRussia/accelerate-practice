@@ -6,7 +6,7 @@ import { SkillLevelType } from "../../type/users/skill-level.type";
 import { TimeForTrainingType } from "../../type/users/time-for-training.type";
 import { TrainingType } from "../../type/users/training-type.type";
 import { UserRoleType } from "../../type/users/user-role.type";
-import { CoachCreateUserRdo, StudentCreateUserRdo } from "./create-user.rdo";
+import { StudentCreateUserRdo } from "./create-user.rdo";
 
 
 export class StudentUserRdo implements StudentCreateUserRdo {

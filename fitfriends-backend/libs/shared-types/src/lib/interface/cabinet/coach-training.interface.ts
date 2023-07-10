@@ -4,8 +4,6 @@ import { GenderType, SkillLevelType, TimeForTrainingType, TrainingType } from "@
 export interface CoachTrainingInterface {
   name?: string;
 
-  // backgroundImage?: string;
-
   skillLevel?: SkillLevelType;
 
   trainingType?: TrainingType;

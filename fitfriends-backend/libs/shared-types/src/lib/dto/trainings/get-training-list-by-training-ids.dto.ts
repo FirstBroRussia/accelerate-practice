@@ -2,6 +2,7 @@ import { IsMongoIdArrayValidator } from "@fitfriends-backend/shared-types";
 import { Expose } from "class-transformer";
 import { IsArray } from "class-validator";
 
+
 export class GetTrainingListByTrainingIdsDto {
   @Expose()
   @IsArray()

@@ -1,14 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Model } from 'mongoose';
+
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { NotifyEntity } from './entity/notify.entity';
-import { Model } from 'mongoose';
 import { CreateNotifyForNotifyMicroservice, NotifyMicroserviceConstant } from '@fitfriends-backend/shared-types';
 
 
 @Injectable()
 export class NotifyRepositoryService {
-  private readonly logger = new Logger(NotifyRepositoryService.name);
-
   constructor (
     @InjectModel(NotifyEntity.name) private readonly notifyModel: Model<NotifyEntity>,
   ) { }

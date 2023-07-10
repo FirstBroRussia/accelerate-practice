@@ -1,4 +1,4 @@
-import { Expose, Transform, Type } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 
 import { BaseNotifyRdo } from "@fitfriends-backend/shared-types";
 

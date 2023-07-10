@@ -1,19 +1,15 @@
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { BaseCreateUserRdo, CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, FriendUserInfoRdo, GetFriendsListQuery, GetUserListDto, JwtUserPayloadDto, LoginUserDto, MongoIdValidationPipe, RequestTrainingRdo, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStatusRequestTrainingDto, UpdateStudentUserInfoDto, UserRoleEnum, UserRoleType } from '@fitfriends-backend/shared-types';
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
 
 import { UsersService } from './users.service';
 
-import { UsersMicroserviceEnvInterface } from '../assets/interface/users-microservice-env.interface';
 import { isEnum, isMongoId, validate } from 'class-validator';
 
 
 @Controller('users')
 export class UsersController {
-  private readonly logger = new Logger(UsersController.name);
-
   constructor (
     private readonly usersService: UsersService,
   ) { }
@@ -38,7 +34,7 @@ export class UsersController {
       throw new BadRequestException('Невалидные данные, в том числе поле "role"');
     }
 
-    const transformDto = role === 'Student' ? fillDTOWithExcludeExtraneousValues(StudentCreateUserDto, dto)
+    const transformDto = role === UserRoleEnum.Student ? fillDTOWithExcludeExtraneousValues(StudentCreateUserDto, dto)
       : fillDTOWithExcludeExtraneousValues(CoachCreateUserDto, dto);
 
     const errors = await validate(transformDto);
@@ -49,7 +45,7 @@ export class UsersController {
 
     const result = await this.usersService.create(transformDto);
 
-    const rdo = role === 'Student' ? fillRDO(StudentCreateUserRdo, result)
+    const rdo = role === UserRoleEnum.Student ? fillRDO(StudentCreateUserRdo, result)
     : fillRDO(CoachCreateUserRdo, result);
 
 
@@ -73,7 +69,7 @@ export class UsersController {
 
     const user = await this.usersService.findById(userId);
 
-    const rdo = user.role === 'Student' ? fillRDO(StudentUserRdo, user) : fillRDO(CoachUserRdo, user);
+    const rdo = user.role === UserRoleEnum.Student ? fillRDO(StudentUserRdo, user) : fillRDO(CoachUserRdo, user);
 
 
     return rdo;
@@ -87,7 +83,7 @@ export class UsersController {
       throw new BadRequestException('Невалидные данные, в том числе поле "role"');
     }
 
-    const transformDto = role === 'Student' ? fillDTOWithExcludeExtraneousValues(UpdateStudentUserInfoDto, dto)
+    const transformDto = role === UserRoleEnum.Student ? fillDTOWithExcludeExtraneousValues(UpdateStudentUserInfoDto, dto)
       : fillDTOWithExcludeExtraneousValues(UpdateCoachUserInfoDto, dto);
 
 
@@ -103,7 +99,7 @@ export class UsersController {
 
     const result = await this.usersService.updateUserInfo(userId, transformDto);
 
-    const rdo = role === 'Student' ? fillRDO(StudentUserRdo, result)
+    const rdo = role === UserRoleEnum.Student ? fillRDO(StudentUserRdo, result)
     : fillRDO(CoachUserRdo, result);
 
 
@@ -115,7 +111,7 @@ export class UsersController {
   public async getUsersList(@Query() query: FindUsersQuery): Promise<(StudentUserRdo | CoachUserRdo)[]> {
     const usersList = await this.usersService.getUsersList(query);
 
-    const rdo = query.role === 'Student' ? fillRDO(StudentUserRdo, usersList) : fillRDO(CoachUserRdo, usersList);
+    const rdo = query.role === UserRoleEnum.Student ? fillRDO(StudentUserRdo, usersList) : fillRDO(CoachUserRdo, usersList);
 
 
     return rdo as unknown as (StudentUserRdo | CoachUserRdo)[];

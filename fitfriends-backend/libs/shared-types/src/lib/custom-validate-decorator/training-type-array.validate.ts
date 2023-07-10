@@ -1,8 +1,10 @@
 import { TrainingType, TrainingTypeEnum } from "@fitfriends-backend/shared-types";
 import { ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isEnum, registerDecorator } from "class-validator";
 
+const VALIDATOR_NAME = 'TrainingTypeArrayValidator';
 
-@ValidatorConstraint({ name: 'TrainingTypeArrayValidator', async: true, })
+
+@ValidatorConstraint({ name: VALIDATOR_NAME, async: true, })
 class TrainingTypeArrayValidator implements ValidatorConstraintInterface {
   async validate(array: TrainingType[]): Promise<boolean> {
 
@@ -20,10 +22,9 @@ class TrainingTypeArrayValidator implements ValidatorConstraintInterface {
 }
 
 export function IsTrainingTypeArrayValidator(validationOptions?: ValidationOptions) {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'TrainingTypeArrayValidator',
+      name: VALIDATOR_NAME,
       target: object.constructor,
       propertyName: propertyName,
       constraints: [],

@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
 
-import { BadRequestException, Controller, Logger } from '@nestjs/common';
+import { BadRequestException, Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern, RpcException, Transport } from '@nestjs/microservices';
 
 
@@ -12,8 +12,6 @@ import { NotifyService } from './notify.service';
 
 @Controller()
 export class NotifyController {
-  private readonly logger = new Logger(NotifyController.name);
-
   constructor(
     private readonly notifyService: NotifyService,
   ) { }

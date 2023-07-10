@@ -1,8 +1,9 @@
-import { LocationMetroEnum, TrainingType, TrainingTypeEnum } from "@fitfriends-backend/shared-types";
+import { LocationMetroEnum, TrainingType } from "@fitfriends-backend/shared-types";
 import { ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface, isEnum, registerDecorator } from "class-validator";
 
+const VALIDATOR_NAME = 'LocationMetroTypeArrayValidator';
 
-@ValidatorConstraint({ name: 'LocationMetroTypeArrayValidator', async: true, })
+@ValidatorConstraint({ name: VALIDATOR_NAME, async: true, })
 class LocationMetroTypeArrayValidator implements ValidatorConstraintInterface {
   async validate(array: TrainingType[]): Promise<boolean> {
 
@@ -20,10 +21,9 @@ class LocationMetroTypeArrayValidator implements ValidatorConstraintInterface {
 }
 
 export function IsLocationMetroTypeArrayValidator(validationOptions?: ValidationOptions) {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'LocationMetroTypeArrayValidator',
+      name: VALIDATOR_NAME,
       target: object.constructor,
       propertyName: propertyName,
       constraints: [],

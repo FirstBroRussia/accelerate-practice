@@ -1,6 +1,6 @@
+import { Document } from "mongoose";
 import { CreateOrderDto, OrderInterface, PaymentType, ProductType } from "@fitfriends-backend/shared-types";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
 
 
 export interface OrderEntity extends Document { }

@@ -1,5 +1,5 @@
 import { Expose, Transform, Type } from "class-transformer";
-import { IsEnum, IsInt, IsNotEmpty, Min, isEnum } from "class-validator";
+import { IsEnum, IsInt, Min, isEnum } from "class-validator";
 import { UserRoleEnum } from "../enum/users/user-role.enum";
 import { ONE_VALUE } from "../constant/common.constant";
 import { AscDescSortEnum } from "../enum/common/asc-desc-sort.enum";

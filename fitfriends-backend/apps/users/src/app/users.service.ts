@@ -1,8 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { CoachCreateUserDto, FindUsersQuery, GetFriendsListQuery, JwtUserPayloadDto, LoginUserDto, StudentCreateUserDto, UpdateCoachUserInfoDto, UpdateStatusRequestTrainingDto, UpdateStudentUserInfoDto } from '@fitfriends-backend/shared-types';
+import { CoachCreateUserDto, FindUsersQuery, GetFriendsListQuery, JwtUserPayloadDto, LoginUserDto, StudentCreateUserDto, UpdateCoachUserInfoDto, UpdateStatusRequestTrainingDto, UpdateStudentUserInfoDto, UserRoleEnum } from '@fitfriends-backend/shared-types';
 import { compareHash } from '@fitfriends-backend/core';
-import { UsersMicroserviceEnvInterface } from '../assets/interface/users-microservice-env.interface';
 import { UsersRepositoryService } from './users-repository/users-repository.service';
 import { BaseUserEntity, CoachUserEntity, StudentUserEntity } from './users-repository/entity/user.entity';
 import { RequestTrainingEntity } from './users-repository/entity/request-training.entity';
@@ -13,7 +11,6 @@ export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
   constructor (
-    private readonly config: ConfigService<UsersMicroserviceEnvInterface>,
     private readonly usersRepository: UsersRepositoryService,
   ) { }
 
@@ -102,7 +99,7 @@ export class UsersService {
     const creatorUser = await this.findById(creatorUserId);
     const targetPrefriendUser = await this.findById(friendUserId);
 
-    if (creatorUser.role === 'Coach' && targetPrefriendUser.role === 'Student') {
+    if (creatorUser.role === UserRoleEnum.Coach && targetPrefriendUser.role === UserRoleEnum.Student) {
       throw new BadRequestException('Вы не имеете права добавлять пользователя с ролью "Пользователь" к себе в друзья.');
     }
 
@@ -168,11 +165,11 @@ export class UsersService {
 
     const existTargetUser = await this.findById(targetUserId);
 
-    if (existTargetUser.role === 'Student') {
+    if (existTargetUser.role === UserRoleEnum.Student) {
       if (!(existTargetUser as StudentUserEntity).trainingIsReady) {
         throw new BadRequestException('Данный пользователь не готов к совместной тренировке.');
       }
-    } else if (existTargetUser.role === 'Coach') {
+    } else if (existTargetUser.role === UserRoleEnum.Coach) {
       if (!(existTargetUser as CoachUserEntity).personalTraining) {
         throw new BadRequestException('Данный тренер не готов к персональной тренировке.');
       }
@@ -194,9 +191,6 @@ export class UsersService {
 
   public async updateStatusRequestTraining(requestId: string, targetUserId: string, dto: UpdateStatusRequestTrainingDto): Promise<any> {
     const { status } = dto;
-
-    console.log(requestId);
-    console.log(targetUserId);
 
     const existDocument = await this.usersRepository.getRequestTrainingDocumentById(requestId);
 
