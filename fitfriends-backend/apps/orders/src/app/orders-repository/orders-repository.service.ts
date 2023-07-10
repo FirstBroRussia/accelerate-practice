@@ -1,5 +1,5 @@
 import { CreateOrderDto, DEFAULT_PAGINATION_LIMIT, GetDocumentQuery } from '@fitfriends-backend/shared-types';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { OrderEntity } from './entity/order.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, QueryOptions } from 'mongoose';
@@ -7,8 +7,6 @@ import { BalanceOrdersFromOrdersMicroserviceDto } from '../../../../../libs/shar
 
 @Injectable()
 export class OrdersRepositoryService {
-  private readonly logger = new Logger(OrdersRepositoryService.name);
-
   constructor (
     @InjectModel(OrderEntity.name) private readonly orderModel: Model<OrderEntity>,
   ) { }

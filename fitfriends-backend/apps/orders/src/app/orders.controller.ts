@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 
 import { CoachOrderInfoRdo, CreateOrderDto, GetDocumentQuery, MongoIdValidationPipe, StudentOrderInfoRdo, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
 import { fillRDO } from '@fitfriends-backend/core';
@@ -9,8 +9,6 @@ import { BalanceOrdersFromOrdersMicroserviceDto } from '../../../../libs/shared-
 
 @Controller('orders')
 export class OrdersController {
-  private readonly logger = new Logger(OrdersController.name);
-
   constructor(
     private readonly ordersService: OrdersService,
   ) { }

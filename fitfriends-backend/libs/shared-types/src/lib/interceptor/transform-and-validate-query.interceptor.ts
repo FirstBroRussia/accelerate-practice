@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { CallHandler, ExecutionContext, Injectable, Logger, LoggerService, NestInterceptor, BadRequestException } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor, BadRequestException } from "@nestjs/common";
 import { ClassConstructor } from "class-transformer";
 import { validate } from "class-validator";
 
@@ -8,8 +8,6 @@ import { fillDTOWithExcludeExtraneousValues } from '@fitfriends-backend/core';
 
 @Injectable()
 export class TransformAndValidateQueryInterceptor implements NestInterceptor {
-  private readonly logger: LoggerService = new Logger(TransformAndValidateQueryInterceptor.name);
-
   constructor (
     private readonly classConstructor: ClassConstructor<any>,
   ) { }

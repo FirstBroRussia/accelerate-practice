@@ -3,6 +3,7 @@ import { CommentsRepositoryService } from './comments-repository/comments-reposi
 import { CreateCommentForCommentsMicroserviceDto, GetDocumentQuery } from '@fitfriends-backend/shared-types';
 import { CommentEntity } from './comments-repository/entity/comment.entity';
 
+
 @Injectable()
 export class CommentService {
   private readonly logger = new Logger(CommentService.name);

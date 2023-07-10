@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { ConfigService } from '@nestjs/config';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { BalanceOrdersFromOrdersMicroserviceDto, CoachOrderInfoRdo, CreateOrderDto, CustomErrorResponseType, GetDocumentQuery, StudentOrderInfoRdo } from '@fitfriends-backend/shared-types';
 
@@ -10,8 +10,6 @@ import { BffMicroserviceEnvInterface } from 'apps/bff/src/assets/interface/bff-m
 
 @Injectable()
 export class OrdersMicroserviceClientService {
-  private readonly logger = new Logger(OrdersMicroserviceClientService.name);
-
   constructor (
     private readonly config: ConfigService<BffMicroserviceEnvInterface>,
   ) { }

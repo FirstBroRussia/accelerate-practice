@@ -8,10 +8,8 @@ import { Request } from 'express';
 import * as mime from 'mime-types';
 
 
-import { BadRequestException, CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { BadRequestException, CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 
-import { BffMicroserviceEnvInterface } from '../interface/bff-microservice-env.interface';
 import { checkString } from '@fitfriends-backend/core';
 import { ExpressUploadFileType, JwtUserPayloadRdo, UserRoleEnum } from '@fitfriends-backend/shared-types';
 
@@ -41,11 +39,8 @@ type FileStreamCompletedType = {
 
 
 export class UpdateUserInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(UpdateUserInterceptor.name);
-
   constructor (
     private files: FileOptionsType[],
-    private readonly config: ConfigService<BffMicroserviceEnvInterface>,
   ) { }
 
 

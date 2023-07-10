@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { CallHandler, ExecutionContext, Injectable, Logger, LoggerService, NestInterceptor, BadRequestException } from "@nestjs/common";
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor, BadRequestException } from "@nestjs/common";
 import { ClassConstructor } from "class-transformer";
 import { validate } from "class-validator";
 
@@ -13,8 +13,6 @@ type InterceptorOptionsType = {
 
 @Injectable()
 export class TransformAndValidateDtoInterceptor implements NestInterceptor {
-  private readonly logger: LoggerService = new Logger(TransformAndValidateDtoInterceptor.name);
-
   constructor (
     private readonly classConstructor: ClassConstructor<any>,
     private readonly options?: InterceptorOptionsType,

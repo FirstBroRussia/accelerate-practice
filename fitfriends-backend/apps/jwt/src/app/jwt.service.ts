@@ -1,6 +1,6 @@
 import * as jose from 'jose';
 
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtMicroserviceEnvInterface } from '../assets/interface/jwt-microservice-env.interface';
 import { JwtErrorMessageEnum, JwtUserPayloadDto, JwtUserPayloadRdo, LogoutedUserDto } from '@fitfriends-backend/shared-types';
@@ -10,8 +10,6 @@ import { LogoutedUserEntity } from './jwt-repository/entity/logouted-user.entity
 
 @Injectable()
 export class JwtService {
-  private readonly logger = new Logger(JwtService.name);
-
   private readonly algorithm: string = 'HS256';
 
   constructor (

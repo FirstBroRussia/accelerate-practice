@@ -1,13 +1,12 @@
-import { Controller, Get, Post, Body, Logger, UseInterceptors, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors, Param } from '@nestjs/common';
 
 import { CommentService } from './comment.service';
 import { CommentFromCommentsMicroserviceRdo, CommentsListFromCommentsMicroserviceRdo, CreateCommentForCommentsMicroserviceDto, GetDocumentQuery, MongoIdValidationPipe, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
 import { fillRDO } from '@fitfriends-backend/core';
 
+
 @Controller('comments')
 export class CommentController {
-  private readonly logger = new Logger(CommentController.name);
-
   constructor(
     private readonly commentService: CommentService,
   ) { }

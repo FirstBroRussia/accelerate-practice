@@ -5,11 +5,9 @@ import { Request } from 'express';
 
 import { CreateCoachTrainingDto, JwtUserPayloadRdo, CoachTrainingRdo, TransformAndValidateDtoInterceptor, UserRoleEnum, MongoIdValidationPipe, UpdateCoachTrainingDto, FindCoachTrainingsQuery, TransformAndValidateQueryInterceptor, UpdateRatingCoachTrainingDto, GetFriendsListQuery, CreateOrderDto, StudentOrderInfoRdo, GetDocumentQuery, GetTrainingListByTrainingIdsDto, CoachOrderInfoRdo, RequestTrainingRdo, FriendUserInfoRdo, UpdateStatusRequestTrainingDto, BalanceRdo, CreateCommentDto, CreateCommentForCommentsMicroserviceDto, CommentRdo, NotifyMessageEnum, CreateNotifyForNotifyMicroservice, NotifyRdo } from '@fitfriends-backend/shared-types';
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpCode, Logger, Param, Patch, Post, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { CheckAuthUserRoleGuard } from 'apps/bff/src/assets/guard/check-auth-user-role.guard';
 import { JwtAuthGuard } from 'apps/bff/src/assets/guard/jwt-auth.guard';
 import { CreateCoachTrainingInterceptor } from 'apps/bff/src/assets/interceptor/create-coach-training.interceptor';
-import { BffMicroserviceEnvInterface } from 'apps/bff/src/assets/interface/bff-microservice-env.interface';
 import { TrainingsMicroserviceClientService } from '../microservice-client/trainings-microservice-client/trainings-microservice-client.service';
 import { fillRDO } from '@fitfriends-backend/core';
 import { HttpStatusCode } from 'axios';
@@ -33,8 +31,6 @@ export class CabinetToBffController {
   ) { }
 
 
-  // TRAININGS
-
   @Post('trainings')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateCoachTrainingDto))
   @UseInterceptors(new CreateCoachTrainingInterceptor([
@@ -45,7 +41,7 @@ export class CabinetToBffController {
         extension: /^(mov|avi|mp4|qt)$/,
       },
     },
-  ], new ConfigService))
+  ]))
   @UseGuards(new CheckAuthUserRoleGuard(UserRoleEnum.Coach))
   @UseGuards(JwtAuthGuard)
   public async createCoachTraining(@Req() req: Request & { user: JwtUserPayloadRdo }, @Body() dto: CreateCoachTrainingDto): Promise<CoachTrainingRdo> {
@@ -78,7 +74,7 @@ export class CabinetToBffController {
         extension: /^(mov|avi|mp4|qt)$/,
       },
     },
-  ], new ConfigService))
+  ]))
   @UseGuards(new CheckAuthUserRoleGuard(UserRoleEnum.Coach))
   @UseGuards(JwtAuthGuard)
   public async updateTrainingById(@Param('trainingId', MongoIdValidationPipe) trainingId: string, @Body() dto: UpdateCoachTrainingDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
@@ -119,9 +115,7 @@ export class CabinetToBffController {
     return fillRDO(CoachTrainingRdo, result) as unknown as CoachTrainingRdo[];
   }
 
-  // ---------------------------
 
-  // FRIENDS
 
 
   @Get('friends/addfriend/:friendUserId')
@@ -174,7 +168,7 @@ export class CabinetToBffController {
   public async createRequestTraining(@Param('targetUserId', MongoIdValidationPipe) targetUserId: string, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
     const { sub, role } = req.user;
 
-    if (role === 'Coach') {
+    if (role === UserRoleEnum.Coach) {
       throw new BadRequestException('Пользователь с ролью "Тренер" не может сам лично создавать заявки на персональные тренировки.');
     }
 
@@ -182,7 +176,7 @@ export class CabinetToBffController {
 
     const result = await this.usersMicroserviceClient.createRequestTraining(sub, targetUserId);
 
-    if (targetUserInfo.role === 'Student') {
+    if (targetUserInfo.role === UserRoleEnum.Student) {
       const dtoForNotifyMicroservice: CreateNotifyForNotifyMicroservice = {
         creatorUserId: sub,
         targetUserId: targetUserId,
@@ -219,15 +213,13 @@ export class CabinetToBffController {
     await this.usersMicroserviceClient.updateStatusRequestTraining(requestId, sub, dto);
   }
 
-  // --------------------------
 
-  // ORDERS
 
   @Post('orders')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateOrderDto))
   @UseGuards(JwtAuthGuard)
   public async createOrder(@Body() dto: CreateOrderDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<void> {
-    if (req.user.role === 'Coach') {
+    if (req.user.role === UserRoleEnum.Coach) {
       throw new ForbiddenException('Доступ запрещен. Пользователь с ролью "Тренер" не имеет права делать заказ.');
     }
 
@@ -283,22 +275,20 @@ export class CabinetToBffController {
       return item;
     });
 
-    const rdo = role === 'Student' ? fillRDO(StudentOrderInfoRdo, result) : fillRDO(CoachOrderInfoRdo, result);
+    const rdo = role === UserRoleEnum.Student ? fillRDO(StudentOrderInfoRdo, result) : fillRDO(CoachOrderInfoRdo, result);
 
 
     return rdo as unknown as (StudentOrderInfoRdo | CoachOrderInfoRdo)[];
   }
 
-  // ----------------------
 
-  // BALANCE
 
   @Get('balance')
   @UseGuards(JwtAuthGuard)
   public async getBalance(@Req() req: Request & { user: JwtUserPayloadRdo }): Promise<BalanceRdo[]> {
     const { sub, role } = req.user;
 
-    if (role !== 'Student') {
+    if (role !== UserRoleEnum.Student) {
       throw new ForbiddenException('Доступ запрещен.');
     }
 
@@ -322,9 +312,7 @@ export class CabinetToBffController {
     return fillRDO(BalanceRdo, balanceList) as unknown as BalanceRdo[];
   }
 
-  // ---------------------
 
-  // COMMENT
 
   @Post('comments')
   @UseInterceptors(new TransformAndValidateDtoInterceptor(CreateCommentDto))
@@ -332,7 +320,7 @@ export class CabinetToBffController {
   public async createComment(@Body() dto: CreateCommentDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<CommentRdo> {
     const { sub, role } = req.user;
 
-    if (role === 'Coach') {
+    if (role === UserRoleEnum.Coach) {
       throw new BadRequestException('Тренер не имеет права оставлять комментарии.');
     }
 
@@ -386,9 +374,7 @@ export class CabinetToBffController {
     return fillRDO(CommentRdo, transformCommentsList) as unknown as CommentRdo[];
   }
 
-  // ------------------
 
-  // NOTIFY
 
   @Get('notify')
   @UseGuards(JwtAuthGuard)

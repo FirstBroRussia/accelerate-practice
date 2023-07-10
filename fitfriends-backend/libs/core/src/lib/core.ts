@@ -11,7 +11,7 @@ export const getMongoConnectionUrl = ({username, password, host, port, databaseN
 };
 
 export const generateHash = async (string: string): Promise<string> => {
-  const saltRounds = 10; // Количество раундов хеширования
+  const saltRounds = 10;
 
   return await bcrypt.hash(string, saltRounds);
 }

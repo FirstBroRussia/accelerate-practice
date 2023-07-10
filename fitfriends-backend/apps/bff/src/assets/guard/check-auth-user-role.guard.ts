@@ -4,7 +4,6 @@ import { Request } from 'express';
 
 
 export class CheckAuthUserRoleGuard implements CanActivate {
-
   constructor (
     private readonly role: UserRoleType,
   ) { }

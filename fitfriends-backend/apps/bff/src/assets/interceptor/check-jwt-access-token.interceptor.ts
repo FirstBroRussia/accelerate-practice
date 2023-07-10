@@ -2,7 +2,6 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  Logger,
   NestInterceptor,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -12,8 +11,6 @@ import { HttpStatusCode } from 'axios';
 
 @Injectable()
 export class CheckJwtAccessTokenInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(CheckJwtAccessTokenInterceptor.name);
-
   constructor (
     private readonly jwtMicroserviceClient: JwtMicroserviceClientService,
   ) { }

@@ -1,8 +1,6 @@
-import { Body, Controller, Get, HttpCode, Logger, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseInterceptors } from '@nestjs/common';
 
 import { JwtService } from './jwt.service';
-import { ConfigService } from '@nestjs/config';
-import { JwtMicroserviceEnvInterface } from '../assets/interface/jwt-microservice-env.interface';
 import { fillRDO } from '@fitfriends-backend/core';
 import { JwtAccessTokenDto, JwtAccessTokenRdo, JwtRefreshTokenDto, JwtUserPayloadDto, JwtUserPayloadRdo, JwtValidationPipe, LoginUserRdo, LogoutedUserDto, TransformAndValidateDtoInterceptor } from '@fitfriends-backend/shared-types';
 import { HttpStatusCode } from 'axios';
@@ -10,8 +8,6 @@ import { HttpStatusCode } from 'axios';
 
 @Controller('jwt')
 export class JwtController {
-  private readonly logger = new Logger(JwtController.name);
-
   constructor(
     private readonly jwtService: JwtService,
   ) { }

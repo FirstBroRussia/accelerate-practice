@@ -14,8 +14,8 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { BffModule } from './app/bff.module';
 import { ConfigService } from '@nestjs/config';
 import { BffMicroserviceEnvInterface } from './assets/interface/bff-microservice-env.interface';
-import { AllExceptionsFilter, BffMicroserviceConstant } from '@fitfriends-backend/shared-types';
-import { Transport } from '@nestjs/microservices';
+import { AllExceptionsFilter } from '@fitfriends-backend/shared-types';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(BffModule);

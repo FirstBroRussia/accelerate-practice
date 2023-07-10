@@ -1,12 +1,10 @@
 import { BffMicroserviceConstant, CreateNotifyForNotifyMicroservice, GetNotifyDto, NotifyFromNotifyMicroserviceRdo, NotifyMessageEnum, RemoveNotifyDto } from '@fitfriends-backend/shared-types';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientRMQ } from '@nestjs/microservices';
 
 
 @Injectable()
 export class NotifyMicroserviceClientService {
-  private readonly logger = new Logger(NotifyMicroserviceClientService.name);
-
   constructor (
     @Inject(BffMicroserviceConstant.NOTIFY_MICROSERVICE_CLIENT) private readonly notifyRabbitMqClient: ClientRMQ,
   ) { }

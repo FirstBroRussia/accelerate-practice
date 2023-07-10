@@ -1,14 +1,15 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { BffMicroserviceEnvInterface } from '../../../assets/interface/bff-microservice-env.interface';
-import { CustomErrorResponseType, JwtAccessTokenDto, JwtAccessTokenRdo, JwtRefreshTokenDto, JwtUserPayloadDto, JwtUserPayloadRdo, LoginUserRdo } from '@fitfriends-backend/shared-types';
 import axios, { AxiosError } from 'axios';
+
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import { BffMicroserviceEnvInterface } from '../../../assets/interface/bff-microservice-env.interface';
+
+import { CustomErrorResponseType, JwtAccessTokenDto, JwtAccessTokenRdo, JwtRefreshTokenDto, JwtUserPayloadDto, JwtUserPayloadRdo, LoginUserRdo } from '@fitfriends-backend/shared-types';
 
 
 @Injectable()
 export class JwtMicroserviceClientService {
-  private readonly logger = new Logger(JwtMicroserviceClientService.name);
-
   constructor (
     private readonly config: ConfigService<BffMicroserviceEnvInterface>,
   ) { }

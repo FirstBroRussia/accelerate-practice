@@ -8,13 +8,10 @@ import { Request } from 'express';
 import * as mime from 'mime-types';
 
 
-import { BadRequestException, CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { BadRequestException, CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 
 import { checkString } from '@fitfriends-backend/core';
 import { ExpressUploadFileType } from '@fitfriends-backend/shared-types';
-
-import { BffMicroserviceEnvInterface } from '../interface/bff-microservice-env.interface';
 
 
 const ONE_MEGABYTE_SIZE = 1024 * 1024; // В мегабайтах
@@ -42,11 +39,8 @@ type FileStreamCompletedType = {
 
 
 export class CreateCoachTrainingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(CreateCoachTrainingInterceptor.name);
-
   constructor (
     private files: FileOptionsType[],
-    private readonly config: ConfigService<BffMicroserviceEnvInterface>,
   ) { }
 
 

@@ -1,13 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommentEntity } from './entity/comment.entity';
 import { Model } from 'mongoose';
 import { CreateCommentForCommentsMicroserviceDto, DEFAULT_PAGINATION_LIMIT, GetDocumentQuery } from '@fitfriends-backend/shared-types';
 
+
 @Injectable()
 export class CommentsRepositoryService {
-  private readonly logger = new Logger(CommentsRepositoryService.name);
-
   constructor (
     @InjectModel(CommentEntity.name) private readonly commentModel: Model<CommentEntity>,
   ) { }

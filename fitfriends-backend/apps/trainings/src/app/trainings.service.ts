@@ -1,13 +1,11 @@
-import { BadRequestException, ForbiddenException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { TrainingsRepositoryService } from './trainings-repository/trainings-repository.service';
-import { CreateCoachTrainingDto, FindCoachTrainingsQuery, ONE_VALUE, UpdateCoachTrainingDto, UpdateRatingCoachTrainingDto, ZERO_VALUE } from '@fitfriends-backend/shared-types';
+import { CreateCoachTrainingDto, FindCoachTrainingsQuery, UpdateCoachTrainingDto, UpdateRatingCoachTrainingDto, ZERO_VALUE } from '@fitfriends-backend/shared-types';
 import { CoachTrainingEntity } from './trainings-repository/entity/training.entity';
 
 
 @Injectable()
 export class TrainingsService {
-  private readonly logger = new Logger(TrainingsService.name);
-
   constructor (
     private readonly trainingsRepository: TrainingsRepositoryService,
   ) { }

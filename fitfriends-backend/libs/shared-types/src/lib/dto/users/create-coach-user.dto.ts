@@ -8,8 +8,6 @@ import {
   LocationMetroType,
   SkillLevelEnum,
   SkillLevelType,
-  TimeForTrainingEnum,
-  TimeForTrainingType,
   TrainingType,
   UserInterface,
   UserRoleEnum,
@@ -18,7 +16,7 @@ import {
 } from "@fitfriends-backend/shared-types";
 
 
-import { IsString, MinLength, MaxLength, IsEmail, IsNotEmpty, IsEnum, IsArray, ArrayMinSize, ArrayMaxSize, IsBoolean, IsInt, Min, Max } from 'class-validator';
+import { IsString, MinLength, MaxLength, IsEmail, IsNotEmpty, IsEnum, IsArray, ArrayMinSize, ArrayMaxSize, IsBoolean } from 'class-validator';
 import { Expose, Transform, Type } from 'class-transformer';
 
 

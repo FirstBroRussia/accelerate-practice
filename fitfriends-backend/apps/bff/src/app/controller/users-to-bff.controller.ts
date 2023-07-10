@@ -10,7 +10,6 @@ import { ConfigService } from '@nestjs/config';
 import { fillDTOWithExcludeExtraneousValues, fillRDO } from '@fitfriends-backend/core';
 import { CoachCreateUserDto, CoachCreateUserRdo, CoachUserRdo, FindUsersQuery, JwtRefreshTokenDto, JwtUserPayloadRdo, LoginUserDto, LoginUserRdo, MongoIdValidationPipe, StudentCreateUserDto, StudentCreateUserRdo, StudentUserRdo, TransformAndValidateDtoInterceptor, TransformAndValidateQueryInterceptor, UpdateCoachUserInfoDto, UpdateStudentUserInfoDto, UserRoleEnum } from '@fitfriends-backend/shared-types';
 
-import { BffMicroserviceEnvInterface } from '../../assets/interface/bff-microservice-env.interface';
 import { JwtMicroserviceClientService } from '../microservice-client/jwt-microservice-client/jwt-microservice-client.service';
 import { CreateUserInterceptor } from '../../assets/interceptor/create-user.interceptor';
 import { UsersMicroserviceClientService } from '../microservice-client/users-microservice-client/users-microservice-client.service';
@@ -26,7 +25,6 @@ export class UsersToBffController {
   private readonly logger = new Logger(UsersToBffController.name);
 
   constructor(
-    private readonly config: ConfigService<BffMicroserviceEnvInterface>,
     private readonly usersMicroserviceClient: UsersMicroserviceClientService,
     private readonly jwtMicroserviceClient: JwtMicroserviceClientService,
   ) { }
@@ -49,7 +47,7 @@ export class UsersToBffController {
         extension: /^pdf$/,
       },
     },
-  ], new ConfigService, new UsersMicroserviceClientService(new ConfigService())))
+  ], new UsersMicroserviceClientService(new ConfigService())))
   public async register(@Body() dto: StudentCreateUserDto | CoachCreateUserDto) {
     const { role } = dto;
 
@@ -57,7 +55,7 @@ export class UsersToBffController {
       throw new BadRequestException('Невалидные данные, в том числе поле "role"');
     }
 
-    const transformDto = role === 'Student' ? fillDTOWithExcludeExtraneousValues(StudentCreateUserDto, dto)
+    const transformDto = role === UserRoleEnum.Student ? fillDTOWithExcludeExtraneousValues(StudentCreateUserDto, dto)
     : fillDTOWithExcludeExtraneousValues(CoachCreateUserDto, dto);
 
     const errors = await validate(transformDto);
@@ -68,7 +66,7 @@ export class UsersToBffController {
 
     const response = await this.usersMicroserviceClient.registerUser(transformDto);
 
-    const rdo = role === 'Student' ? fillRDO(StudentCreateUserRdo, response)
+    const rdo = role === UserRoleEnum.Student ? fillRDO(StudentCreateUserRdo, response)
     : fillRDO(CoachCreateUserRdo, response);
 
 
@@ -98,7 +96,7 @@ export class UsersToBffController {
 
     const existUser = await this.usersMicroserviceClient.getUserInfo(userId);
 
-    const rdo = existUser.role === 'Student' ? fillRDO(StudentUserRdo, existUser) : fillRDO(CoachUserRdo, existUser);
+    const rdo = existUser.role === UserRoleEnum.Student ? fillRDO(StudentUserRdo, existUser) : fillRDO(CoachUserRdo, existUser);
 
 
     return rdo;
@@ -121,7 +119,7 @@ export class UsersToBffController {
         extension: /^pdf$/,
       },
     },
-  ], new ConfigService))
+  ]))
   @UseGuards(JwtAuthGuard)
   public async updateUserInfo(@Param('userId', MongoIdValidationPipe) userId: string, @Body() dto: UpdateStudentUserInfoDto | UpdateCoachUserInfoDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
     const { sub, role } = req.user;
@@ -130,7 +128,7 @@ export class UsersToBffController {
       throw new ForbiddenException('Доступ запрещен');
     }
 
-    const transformDto = role === 'Student' ? fillDTOWithExcludeExtraneousValues(UpdateStudentUserInfoDto, dto)
+    const transformDto = role === UserRoleEnum.Student ? fillDTOWithExcludeExtraneousValues(UpdateStudentUserInfoDto, dto)
     : fillDTOWithExcludeExtraneousValues(UpdateCoachUserInfoDto, dto);
 
     const errors = await validate(transformDto, {
@@ -148,11 +146,11 @@ export class UsersToBffController {
     let oldAvatarPath = null;
     let oldCertificatesPath = null;
 
-    if (role === 'Student' && dto.avatar) {
+    if (role === UserRoleEnum.Student && dto.avatar) {
       const { avatar } = await this.usersMicroserviceClient.getUserInfo(userId);
 
       oldAvatarPath = avatar;
-    } else if (role === 'Coach') {
+    } else if (role === UserRoleEnum.Coach) {
       if (!dto.avatar && !(dto as UpdateCoachUserInfoDto).certificates) {
         return;
       }
@@ -180,7 +178,7 @@ export class UsersToBffController {
       })
     }
 
-    const rdo = role === 'Student' ? fillRDO(StudentUserRdo, result) : fillRDO(CoachUserRdo, result);
+    const rdo = role === UserRoleEnum.Student ? fillRDO(StudentUserRdo, result) : fillRDO(CoachUserRdo, result);
 
 
     return rdo;
@@ -199,14 +197,14 @@ export class UsersToBffController {
     public async getUsersList(@Query() query: FindUsersQuery, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<(StudentUserRdo | CoachUserRdo)[]> {
     const { role } = req.user;
 
-    if (role !== 'Student') {
+    if (role !== UserRoleEnum.Student) {
       throw new ForbiddenException('Доступ запрещен, запросить данный список могут только обычные пользователи.');
     }
 
     const usersList = await this.usersMicroserviceClient.getUsersList(req.url);
 
 
-    const rdo = query.role === 'Student' ? fillRDO(StudentUserRdo, usersList) : fillRDO(CoachUserRdo, usersList);
+    const rdo = query.role === UserRoleEnum.Student ? fillRDO(StudentUserRdo, usersList) : fillRDO(CoachUserRdo, usersList);
 
 
     return rdo as unknown as (StudentUserRdo | CoachUserRdo)[];
