@@ -30,3 +30,13 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: test
       ME_CONFIG_MONGODB_URL: mongodb://admin:test@mongodb:27017/
 
+  fitfriends.comments:
+    image: fitfriends.comments
+    container_name: fitfriends.comments.service
+    ports:
+      - 30006:3333
+    env_file:
+      - ./env/development.env
+
+
+
