@@ -1,5 +1,5 @@
 @STUDENT_USER_JWT = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3MzY5NjUyLCJleHAiOjE2ODczNzA1NTJ9.QBKNocDi7oAc2eq_QnMHDyGLzzi_H-jWUTwTOiGDwyA
-@COACH_USER_JWT = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3MzY5NjUyLCJleHAiOjE2ODczNzA1NTJ9.QBKNocDi7oAc2eq_QnMHDyGLzzi_H-jWUTwTOiGDwyA
+@COACH_USER_JWT = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDliMjU1MThmMDg4YWVhYWY1ZWE2NGMiLCJlbWFpbCI6ImFhYWFycnJAYmJiLmNvbSIsInJvbGUiOiJDb2FjaCIsImlhdCI6MTY4OTA3NTE4MywiZXhwIjoxNjg5MTYxNTgzfQ.K9wCc7Lu1qvRAWrBjF5teSHcCEid5r4AbN0G6G446oY
 
 @REFRESH_TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDkxZTU5OWMxZDk3ODg0YmRkMjNjN2MiLCJlbWFpbCI6ImFhYUBiYmIuY29tIiwicm9sZSI6IkNvYWNoIiwiaWF0IjoxNjg3MzY5NjUyLCJleHAiOjE2ODczNzA1NTJ9.QBKNocDi7oAc2eq_QnMHDyGLzzi_H-jWUTwTOiGDwyA
 
@@ -7,49 +7,145 @@
 // USERS
 
 POST http://127.0.0.1:14000/users/register
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
-{
-  "name": "В",
-  "email": "aaaaa@bbb.com",
-  "password": "12345678",
-  "avatar": "aaa.jpg",
-  "gender": "Men",
-  "dateOfBirth": "05.10.1990",
-  "role": "Student",
-  "description": "FFFFaaaaDDDDssss",
-  "location": "Pionerskaya",
-  "imageForSite": "ImageOne",
-  "skillLevel": "Beginner",
-  "trainingType": [ "Yoga", "Running" ],
-  "timeForTraining": "EightyMin",
-  "allCaloriesToReset": 5000,
-  "caloriesToResetInDay": 1000,
-  "trainingIsReady": true
-}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Вася Пупкинский
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="email"
+
+aaaaaert@bbb.com
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="password"
+
+12345678
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="common-avatar.png"
+Content-Type: image/png
+
+@./test-content/common-avatar.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="gender"
+
+Man
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="dateOfBirth"
+
+05.10.1990
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="role"
+
+Student
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+FFFFaaaaDDDDssss
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="location"
+
+Pionerskaya
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="imageForSite"
+
+ImageOne
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="skillLevel"
+
+Beginner
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="trainingType"
+
+[ "Yoga", "Running" ]
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="timeForTraining"
+
+EightyMin
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="allCaloriesToReset"
+
+5000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="caloriesToResetInDay"
+
+1000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="trainingIsReady"
+
+true
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
 
 POST http://127.0.0.1:14000/users/register
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
-{
-  "name": "В",
-  "email": "aaaaas@bbb.com",
-  "password": "12345678",
-  "avatar": "aaa.jpg",
-  "gender": "Men",
-  "dateOfBirth": "05.10.1990",
-  "role": "Coach",
-  "description": "FFFFaaaaDDDDssss",
-  "location": "Pionerskaya",
-  "imageForSite": "ImageOne",
-  "skillLevel": "Beginner",
-  "trainingType": [ "Yoga", "Running" ],
-  "certificates": "EightyMin.pdf",
-  "awardsToCoach": "dsaDASDSADASDASdsadSADsad",
-  "personalTraining": true
-}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Тренер Мощь
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="email"
+
+aaaaaswsae@bbb.com
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="password"
+
+12345678
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="common-avatar.png"
+Content-Type: image/png
+
+@./test-content/common-avatar.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="gender"
+
+Man
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="dateOfBirth"
+
+05.10.1990
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="role"
+
+Coach
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+FFFFaaaaDDDDssss
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="location"
+
+Pionerskaya
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="imageForSite"
+
+ImageOne
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="skillLevel"
+
+Beginner
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="trainingType"
+
+[ "Yoga", "Running" ]
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="certificates"; filename="common-certificates.pdf"
+Content-Type: application/pdf
+
+@./test-content/common-certificates.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="awardsToCoach"
+
+dsaDASDSADASDASdsadSADsad
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="personalTraining"
+
+true
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
 
@@ -82,7 +178,7 @@ Content-Type: application/json
 
 ###
 GET http://127.0.0.1:14000/users/user/6491e599c1d97884bdd23c7c
-Authorization: Bearer Bearer {{STUDENT_USER_JWT}}
+Authorization: Bearer {{STUDENT_USER_JWT}}
 
 
 ###
@@ -107,13 +203,63 @@ Authorization: Bearer {{STUDENT_USER_JWT}}
 
 // CABINET
 
+POST http://127.0.0.1:14000/cabinet/trainings
+Authorization: Bearer {{COACH_USER_JWT}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Треня пальцe
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="skillLevel"
+
+Beginner
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="trainingType"
+
+Crossfit
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="timeForTraining"
+
+ThirtyMin
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+1000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="quantityOfCalories"
+
+2500
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+Эта тренировка для новичков и направлена чтобы они плавно вошли в рабочий процесс и перешли на более высокие нагрузки
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="gender"
+
+Woman
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="videoOfTraining"; filename="common-video.mov"
+Content-Type: video/quicktime
+
+@./test-content/common-video.mov
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="specialOffer"
+
+false
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
 GET http://127.0.0.1:14000/cabinet/trainings/64986441a8ee67fcf77fb8aa
 Authorization: Bearer {{STUDENT_USER_JWT}}
 
 
 ###
 GET http://127.0.0.1:14000/cabinet/trainings?minPrice=10&maxPrice=10000&minCalories=1200&maxCalories=3000&minRating=0&maxRating=4
-Authorization: Bearer {{{{COACH_USER_JWT}}}}
+Authorization: Bearer {{COACH_USER_JWT}}
 
 ###
 
