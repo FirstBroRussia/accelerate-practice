@@ -121,7 +121,7 @@ export class UsersToBffController {
     },
   ]))
   @UseGuards(JwtAuthGuard)
-  public async updateUserInfo(@Param('userId', MongoIdValidationPipe) userId: string, @Body() dto: UpdateStudentUserInfoDto | UpdateCoachUserInfoDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<any> {
+  public async updateUserInfo(@Param('userId', MongoIdValidationPipe) userId: string, @Body() dto: UpdateStudentUserInfoDto | UpdateCoachUserInfoDto, @Req() req: Request & { user: JwtUserPayloadRdo }): Promise<(StudentUserRdo | CoachUserRdo)> {
     const { sub, role } = req.user;
 
     if (sub !== userId) {
